@@ -1,10 +1,12 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WouldYouRather.Contexts;
 using WouldYouRather.Services;
 
 namespace WouldYouRather
@@ -25,7 +27,16 @@ namespace WouldYouRather
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
 
-            services.AddSingleton<GameService>();
+            services.AddScoped<GameService>();
+            
+            services.AddDbContext<GameContext>(options =>
+            {
+                var connStr = Environment.GetEnvironmentVariable("PG_CONN_STR");
+                if (connStr == null) {
+                    throw new NullReferenceException("No connection string provided as env var PG_CONN_STR");
+                }
+                options.UseNpgsql(connStr);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

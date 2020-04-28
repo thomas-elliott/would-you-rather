@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using WouldYouRather.Contexts;
 using WouldYouRather.Models;
 
 namespace WouldYouRather.Services
 {
     public class GameService
     {
+        private readonly GameContext _gameContext;
         private readonly Dictionary<string, GameResponse> _currentGames = new Dictionary<string, GameResponse>();
 
-        public GameService()
+        public GameService(GameContext gameContext)
         {
+            _gameContext = gameContext;
             CreateGame();
         }
 
