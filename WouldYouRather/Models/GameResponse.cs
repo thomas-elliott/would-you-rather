@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using WouldYouRather.Entities;
 
 namespace WouldYouRather.Models
