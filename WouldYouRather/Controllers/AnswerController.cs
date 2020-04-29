@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WouldYouRather.Models;
 using WouldYouRather.Services;
 
 namespace WouldYouRather.Controllers
@@ -19,18 +20,24 @@ namespace WouldYouRather.Controllers
         }
         
         [HttpGet]
-        public JsonResult GetAnswers(string gameId)
+        public IActionResult GetAnswers(string gameId)
         {
+            _log.LogInformation("Return answers");
             return new JsonResult(_answerService.GetAnswers(gameId));
         }
 
         [HttpPost]
-        public JsonResult PostAnswer(string gameId,
-                                     [FromBody] string text)
+        public IActionResult PostAnswer(string gameId,
+                                        [FromBody] AnswerRequest answer)
         {
-            var answer = _answerService.AddAnswer(text, gameId);
+            _log.LogInformation($"Add an answer to {gameId}: {answer.Answer}");
+            var ans = _answerService.AddAnswer(answer.Answer, gameId);
+            if (ans == null)
+            {
+                return new StatusCodeResult(404);
+            }
             
-            return new JsonResult(answer);
+            return new JsonResult(ans);
         }
     }
 }

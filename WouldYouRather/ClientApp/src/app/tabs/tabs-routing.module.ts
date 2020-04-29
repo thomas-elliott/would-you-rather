@@ -13,7 +13,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../play/play.module').then(m => m.PlayPageModule)
+              import('../pages/play/play.module').then(m => m.PlayPageModule)
           }
         ]
       },
@@ -23,7 +23,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../submit/submit.module').then(m => m.SubmitPageModule)
+              import('../pages/submit/submit.module').then(m => m.SubmitPageModule)
           }
         ]
       },
@@ -33,7 +33,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../players/players.module').then(m => m.PlayersPageModule)
+              import('../pages/players/players.module').then(m => m.PlayersPageModule)
           }
         ]
       },
@@ -43,7 +43,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../settings/settings.module').then(m => m.SettingsPageModule)
+              import('../pages/settings/settings.module').then(m => m.SettingsPageModule)
           }
         ]
       },

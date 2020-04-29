@@ -19,13 +19,17 @@ export class GameService {
               private authService: AuthService) { }
 
   public submitAnswer(gameId: string, answer: string): Observable<any> {
-    return this.http.post(`${this.apiPath}/${gameId}/submit`, answer);
+    return this.http.post(`${this.apiPath}/games/${gameId}/answers`,
+      { answer },
+      {
+      headers: { 'content-type': 'application/json' }
+    });
   }
 
   public getPlayers(): Promise<Player[]> {
     return new Promise<Player[]> ((resolve, reject) => {
       this.authService.getGame().then((game: Game) => {
-        this.http.get(`${this.apiPath}/game/${game.id}/player`).subscribe(
+        this.http.get(`${this.apiPath}/games/${game.id}/player`).subscribe(
           (response: Player[]) => {
             resolve(response);
           }, (error) => {
@@ -38,7 +42,7 @@ export class GameService {
   public getChoice(gameId: string): Promise<Choice> {
     console.debug('Getting choice');
     return new Promise<Choice> (((resolve, reject) => {
-      this.http.get(`${this.apiPath}/game/${gameId}/choice`).subscribe(
+      this.http.get(`${this.apiPath}/games/${gameId}/choice`).subscribe(
           (response: Choice) => {
             console.debug('Returned choice', response);
             resolve(response);
@@ -53,7 +57,7 @@ export class GameService {
 
   public acceptChoice(choice: Choice, gameId: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.http.post(`${this.apiPath}/game/${gameId}/choose`,
+      this.http.post(`${this.apiPath}/games/${gameId}/choose`,
           choice).subscribe(
           () => {
             resolve();
@@ -69,7 +73,7 @@ export class GameService {
   public rejectChoice(choice: Choice, gameId: string): Promise<Choice> {
     console.debug('Rejecting choice: ', choice);
     return new Promise<Choice>((resolve, reject) => {
-      this.http.post(`${this.apiPath}/game/${gameId}/reject`,
+      this.http.post(`${this.apiPath}/games/${gameId}/reject`,
         choice).subscribe(
         (response: Choice) => {
           resolve(response);
@@ -84,7 +88,7 @@ export class GameService {
 
   public getGameInfo(gameId: string): Promise<GameInfo> {
     return new Promise<GameInfo>((resolve) => {
-      this.http.get(`${this.apiPath}/game/${gameId}/info`).subscribe(
+      this.http.get(`${this.apiPath}/games/${gameId}/info`).subscribe(
         (response: GameInfo) => {
           resolve(response);
         },

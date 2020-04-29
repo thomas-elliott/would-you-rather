@@ -15,19 +15,19 @@ namespace WouldYouRather.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetPlayers()
+        public IActionResult GetPlayers()
         {
             return new JsonResult("Unimplemented");
         }
 
         [HttpPost]
-        public JsonResult RegisterPlayer()
+        public IActionResult RegisterPlayer()
         {
             return new JsonResult("Unimplemented");
         }
 
         [HttpDelete]
-        public JsonResult RemovePlayer()
+        public IActionResult RemovePlayer()
         {
             return new JsonResult("Unimplemented");
         }

@@ -41,6 +41,12 @@ namespace WouldYouRather.Services
         public AnswerResponse AddAnswer(string request, string gameId)
         {
             _log.LogInformation($"Adding answer for gameId {gameId}: {request}");
+
+            if (!_gameContext.Games.Any(x => x.Id == gameId))
+            {
+                return null;
+            }
+            
             var answer = _gameContext.Answers.Add(
                 new Answer
                 {
