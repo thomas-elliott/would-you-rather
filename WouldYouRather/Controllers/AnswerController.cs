@@ -1,7 +1,6 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WouldYouRather.Models;
+using WouldYouRather.Services;
 
 namespace WouldYouRather.Controllers
 {
@@ -10,31 +9,28 @@ namespace WouldYouRather.Controllers
     public class AnswerController : ControllerBase
     {
         private readonly ILogger<AnswerController> _log;
+        private readonly AnswerService _answerService;
 
-        public AnswerController(ILogger<AnswerController> log)
+        public AnswerController(ILogger<AnswerController> log,
+                                AnswerService answerService)
         {
             _log = log;
+            _answerService = answerService;
         }
         
         [HttpGet]
         public JsonResult GetAnswers(string gameId)
         {
-            var answer1 = new AnswerResponse
-            {
-                Id = 1,
-                Submitted = DateTime.Now,
-                Text = "Test " + gameId,
-                ChosenCount = 0,
-                IsEliminated = false
-            };
-
-            return new JsonResult(answer1);
+            return new JsonResult(_answerService.GetAnswers(gameId));
         }
 
         [HttpPost]
-        public JsonResult PostAnswer(string gameId)
+        public JsonResult PostAnswer(string gameId,
+                                     [FromBody] string text)
         {
-            return new JsonResult("error " + gameId);
+            var answer = _answerService.AddAnswer(text, gameId);
+            
+            return new JsonResult(answer);
         }
     }
 }

@@ -1,11 +1,13 @@
-using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WouldYouRather.Entities
 {
     public class Player
     {
-        public int Id { get; set; }
-        public string AuthId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string Id { get; set; }
         public string AuthKey { get; set; }
         public string Name { get; set; }
     }

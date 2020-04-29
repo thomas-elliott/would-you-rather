@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WouldYouRather.Models;
 using WouldYouRather.Services;
 
 namespace WouldYouRather.Controllers
@@ -26,7 +25,7 @@ namespace WouldYouRather.Controllers
             return new JsonResult(_gameService.GetGames());
         }
 
-        [HttpGet("/{gameId}", Name = "GetGameById")]
+        [HttpGet("{gameId}", Name = "GetGameById")]
         public IActionResult GetGame(string gameId)
         {
             var game = _gameService.GetGame(gameId);
@@ -42,8 +41,10 @@ namespace WouldYouRather.Controllers
         [HttpPost]
         public IActionResult CreateGame()
         {
+            var game = _gameService.CreateGame();
+            
             _log.LogInformation("Created new game");
-            return CreatedAtRoute("GetGameById", new { gameId = "jioges" }, new GameResponse());
+            return CreatedAtRoute("GetGameById", new { gameId = game.Id }, game);
         }
     }
 }
