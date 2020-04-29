@@ -28,6 +28,7 @@ namespace WouldYouRather
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
 
             services.AddScoped<GameService>();
+            services.AddScoped<AnswerService>();
             
             services.AddDbContext<GameContext>(options =>
             {

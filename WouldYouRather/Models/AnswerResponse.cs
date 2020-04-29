@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using WouldYouRather.Entities;
 
 namespace WouldYouRather.Models
 {
@@ -12,5 +13,17 @@ namespace WouldYouRather.Models
         public string Text { get; set; }
         public bool IsEliminated { get; set; }
         public int ChosenCount { get; set; }
+
+        public static AnswerResponse FromAnswer(Answer answer)
+        {
+            return new AnswerResponse()
+            {
+                Id = answer.Id,
+                Submitted = answer.Submitted,
+                ChosenCount = answer.ChosenCount,
+                IsEliminated = answer.IsEliminated,
+                Text = answer.Text
+            };
+        }
     }
 }
