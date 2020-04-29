@@ -1,0 +1,87 @@
+<ion-toolbar color="secondary" class="ion-text-center" *ngIf="choosingPlayer && !amIPlaying()">
+  <ion-text *ngIf="gameInfo && gameInfo.whoIsChoosing">{{gameInfo.whoIsChoosing.name}} is picking</ion-text>
+</ion-toolbar>
+<ion-toolbar color="warning" class="ion-text-center" *ngIf="choosingPlayer && amIPlaying()">
+  <ion-text>
+    <strong>It's your turn!</strong><br />
+    <strong>Make a choice!</strong>
+  </ion-text>
+</ion-toolbar>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="8" offset-sm="2" size-lg="6" offset-lg="3" *ngIf="!choice || !ready">
+        <ion-card class="ion-text-center">
+          <ion-card-header>
+            <ion-card-title>Waiting...</ion-card-title>
+            <ion-card-subtitle>
+              <ion-text *ngIf="gameInfo && gameInfo.whoIsChoosing">{{gameInfo.whoIsChoosing.name}} is picking</ion-text>
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <br />
+            <ion-spinner class="ion-padding-top"></ion-spinner>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size-sm="8" offset-sm="2" size-lg="6" offset-lg="3" *ngIf="choice && ready">
+        <ion-card *ngIf="choosingPlayer && !amIPlaying()">
+          <ion-card-content>
+          <ion-text>{{choosingPlayer.name}} last chose:</ion-text>
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-content class="ion-text-center">
+            <div>
+              <ion-icon *ngIf="isChoice(false)" size="large" name="close-circle-outline" color="danger"></ion-icon>
+              <ion-icon *ngIf="isChoice(true)" size="large" name="checkmark-circle-outline" color="success"></ion-icon>
+              <ion-text class="ion-text-start">
+                <h2>{{choice.choiceA.text}}</h2>
+              </ion-text>
+            </div>
+            <div class="ion-padding-top" *ngIf="amIPlaying()">
+              <ion-button color="danger" (click)="rejectChoice(true)" *ngIf="allowReject()">
+                <ion-icon name="trash-outline"></ion-icon>
+                <ion-label>This is mine</ion-label>
+              </ion-button>
+              <ion-button (click)="acceptChoice(true)" *ngIf="this.gameInfo && this.gameInfo.remainingQuestions > 1">
+                <ion-icon name="checkmark-outline"></ion-icon>
+                <ion-label>Pick</ion-label>
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <ion-text class="ion-text-center">
+          <h3>OR</h3>
+        </ion-text>
+        <ion-card>
+          <ion-card-content class="ion-text-center">
+            <div>
+              <ion-icon *ngIf="isChoice(true)" size = "large" name="close-circle-outline" color="danger"></ion-icon>
+              <ion-icon *ngIf="isChoice(false)" size = "large" name="checkmark-circle-outline" color="success"></ion-icon>
+              <ion-text class="ion-text-start">
+                <h2>{{choice.choiceB.text}}</h2>
+              </ion-text>
+            </div>
+            <div class="ion-padding-top" *ngIf="amIPlaying()">
+              <ion-button color="danger" (click)="rejectChoice(false)" *ngIf="allowReject()">
+                <ion-icon name="trash-outline"></ion-icon>
+                <ion-label>This is mine</ion-label>
+              </ion-button>
+              <ion-button (click)="acceptChoice(false)" *ngIf="this.gameInfo && this.gameInfo.remainingQuestions > 1">
+                <ion-icon name="checkmark-outline"></ion-icon>
+                <ion-label>Pick</ion-label>
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="!!gameInfo">
+          <ion-card-content>
+            Remaining Questions: {{gameInfo.remainingQuestions}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

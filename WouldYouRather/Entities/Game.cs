@@ -11,6 +11,8 @@ namespace WouldYouRather.Entities
         public string Id { get; set; }
         public bool IsActive { get; set; }
         public bool IsAcceptingSubmissions { get; set; }
+        [Column(TypeName = "jsonb")]
+        public Config Config { get; set; }
         public List<Answer> Answers { get; set; }
     }
 }
