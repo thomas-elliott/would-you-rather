@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService} from '../service/auth.service';
-import {Game} from '../model/game.model';
+import {AuthService} from '../../service/auth.service';
+import {Game} from '../../model/game.model';
 
 @Component({
   selector: 'app-settings',

@@ -48,7 +48,7 @@ export class LoadGamePage implements OnInit {
         this.goToSubmit(response);
       }
     ).catch(() => {
-        this.nav.navigateForward('/no-game');
+        this.nav.navigateForward('/');
     });
   }
 

@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { NoGamePageRoutingModule } from './no-game-routing.module';
+import { LandingPageRoutingModule } from './landing-routing.module';
 
-import { NoGamePage } from './no-game.page';
+import { LandingPage } from './landing.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NoGamePageRoutingModule
+    LandingPageRoutingModule
   ],
-  declarations: [NoGamePage]
+  declarations: [LandingPage]
 })
-export class NoGamePageModule {}
+export class LandingPageModule {}

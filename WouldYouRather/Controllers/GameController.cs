@@ -22,6 +22,7 @@ namespace WouldYouRather.Controllers
         [HttpGet]
         public IActionResult GetGames()
         {
+            _log.LogInformation("Return all games");
             return new JsonResult(_gameService.GetGames());
         }
 
@@ -31,6 +32,7 @@ namespace WouldYouRather.Controllers
             var game = _gameService.GetGame(gameId);
             if (game != null)
             {
+                _log.LogInformation("Returned game");
                 return new JsonResult(game);
             }
 

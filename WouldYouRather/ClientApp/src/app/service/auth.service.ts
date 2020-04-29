@@ -1,11 +1,10 @@
 import {Injectable, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Game} from '../model/game.model';
 
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {WebsocketService} from './websocket.service';
 import {Player} from '../model/player.model';
 import {Auth} from '../model/auth.model';
 
@@ -81,7 +80,7 @@ export class AuthService implements OnInit {
   // TODO: Requires game to be set first
   public registerPlayer(playerName: string): Observable<Player> {
     const player = new Player(playerName);
-    return this.http.post(`${this.apiPath}/game/${this.game.id}/player`,
+    return this.http.post(`${this.apiPath}/games/${this.game.id}/player`,
         player,
         {observe: 'response'}).pipe(map(
         (response: HttpResponse<Auth>) => {
@@ -96,7 +95,7 @@ export class AuthService implements OnInit {
   }
 
   public setGameId(id: string): Observable<Game> {
-    return this.http.get(`${this.apiPath}/game/${id}`).pipe(map(
+    return this.http.get(`${this.apiPath}/games/${id}`).pipe(map(
         (response: Game) => {
           this.game = response;
           this.saveGameIdToStore();

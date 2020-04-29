@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { GameService } from '../service/game.service';
+import { GameService } from '../../service/game.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import {AuthService} from '../service/auth.service';
-import {Game} from '../model/game.model';
+import {AuthService} from '../../service/auth.service';
+import {Game} from '../../model/game.model';
 import {AlertController} from '@ionic/angular';
-import {environment} from '../../environments/environment';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-submit',

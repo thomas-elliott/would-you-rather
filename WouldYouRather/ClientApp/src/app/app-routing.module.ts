@@ -17,17 +17,17 @@ const routes: Routes = [
     loadChildren: () => import('./auth/load-game/load-game.module').then( m => m.LoadGamePageModule)
   },
   {
-    path: 'no-game',
-    loadChildren: () => import('./auth/no-game/no-game.module').then( m => m.NoGamePageModule)
-  },
-  {
     path: '',
-    redirectTo: '/submit/nogame',
+    redirectTo: 'landing',
     pathMatch: 'full'
   },
   {
     path: 'enter-name',
     loadChildren: () => import('./auth/enter-name/enter-name.module').then( m => m.EnterNamePageModule)
+  },
+  {
+    path: 'landing',
+    loadChildren: () => import('./pages/landing/landing.module').then( m => m.LandingPageModule)
   }
 ];
 @NgModule({

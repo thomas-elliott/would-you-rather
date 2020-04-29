@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Player } from '../model/player.model';
-import {GameService} from '../service/game.service';
-import {AuthService} from '../service/auth.service';
+import { Player } from '../../model/player.model';
+import {GameService} from '../../service/game.service';
+import {AuthService} from '../../service/auth.service';
 
 @Component({
   selector: 'app-players',

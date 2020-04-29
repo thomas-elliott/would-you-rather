@@ -1,13 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Player} from '../model/player.model';
+import {Player} from '../../model/player.model';
 import {Subscription} from 'rxjs';
-import {GameService} from '../service/game.service';
-import {Game} from '../model/game.model';
-import {AuthService} from '../service/auth.service';
-import {Choice} from '../model/choice.model';
-import {WebsocketService} from '../service/websocket.service';
-import {NavController} from '@ionic/angular';
-import {GameInfo} from '../model/gameInfo.model';
+import {GameService} from '../../service/game.service';
+import {Game} from '../../model/game.model';
+import {AuthService} from '../../service/auth.service';
+import {Choice} from '../../model/choice.model';
+import {WebsocketService} from '../../service/websocket.service';
+import {GameInfo} from '../../model/gameInfo.model';
 
 @Component({
   selector: 'app-play',
