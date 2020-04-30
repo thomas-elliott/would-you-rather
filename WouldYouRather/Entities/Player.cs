@@ -10,5 +10,6 @@ namespace WouldYouRather.Entities
         public string Id { get; set; }
         public string AuthKey { get; set; }
         public string Name { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

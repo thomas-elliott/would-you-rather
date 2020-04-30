@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WouldYouRather.Models;
+using WouldYouRather.Services;
 
 namespace WouldYouRather.Controllers
 {
@@ -9,27 +11,35 @@ namespace WouldYouRather.Controllers
     {
         private readonly ILogger<PlayerController> _log;
 
-        public PlayerController(ILogger<PlayerController> log)
+        private PlayerService _playerService;
+
+        public PlayerController(ILogger<PlayerController> log,
+                                PlayerService playerService)
         {
             _log = log;
+            _playerService = playerService;
         }
 
         [HttpGet]
         public IActionResult GetPlayers()
         {
-            return new JsonResult("Unimplemented");
+            var players = _playerService.GetPlayers();
+            return new JsonResult(players);
         }
 
         [HttpPost]
-        public IActionResult RegisterPlayer()
+        public IActionResult RegisterPlayer([FromBody] PlayerRequest request)
         {
-            return new JsonResult("Unimplemented");
+            var player = _playerService.AddPlayer(request.Name);
+            return new JsonResult(player);
         }
 
-        [HttpDelete]
-        public IActionResult RemovePlayer()
+        [HttpDelete("{playerId}")]
+        public IActionResult RemovePlayer(string playerId)
         {
-            return new JsonResult("Unimplemented");
+            _log.LogInformation($"Deleting player {playerId}");
+            var player = _playerService.RemovePlayer(playerId);
+            return new JsonResult(player);
         }
     }
 }
