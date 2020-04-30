@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 using WouldYouRather.Contexts;
 using WouldYouRather.Entities;
 using WouldYouRather.Models;
+using WouldYouRather.Utils;
 
 namespace WouldYouRather.Services
 {
@@ -12,8 +12,6 @@ namespace WouldYouRather.Services
     {
         private readonly GameContext _gameContext;
         private readonly Dictionary<string, Game> _currentGames = new Dictionary<string, Game>();
-        
-        private static Random _random = new Random();
 
         public GameService(GameContext gameContext)
         {
@@ -24,7 +22,7 @@ namespace WouldYouRather.Services
         {
             var game = new Game
             {
-                Id = RandomString(6)
+                Id = KeyUtils.RandomString(6)
             };
 
             _currentGames.Add(game.Id, game);
@@ -46,13 +44,6 @@ namespace WouldYouRather.Services
                 .Where(x => x.Id == gameId)
                 .Select(x => GameResponse.FromGame(x))
                 .FirstOrDefault();
-        }
-
-        // TODO: Don't use something from StackExchange, make it securerandom especially for keys
-        private string RandomString(int length)
-        {
-            const string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-            return new string(Enumerable.Repeat(charset, length).Select(s => s[_random.Next(s.Length)]).ToArray());
         }
     }
 }
