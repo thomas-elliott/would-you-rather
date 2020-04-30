@@ -12,6 +12,8 @@ export class LandingPage {
   constructor(private navController: NavController) { }
 
   submitCode() {
-    this.navController.navigateForward(['/submit', this.code]);
+    if (this.code && this.code.length === 6) {
+      this.navController.navigateForward(['/submit', this.code]);
+    }
   }
 }

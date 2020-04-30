@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../service/auth.service';
 import {ActivatedRoute} from '@angular/router';
-import {NavController} from '@ionic/angular';
-import {HttpErrorResponse} from '@angular/common/http';
+import {NavController, ToastController} from '@ionic/angular';
 import {Game} from '../../model/game.model';
 
 @Component({
@@ -14,7 +13,8 @@ export class LoadGamePage implements OnInit {
 
   constructor(private auth: AuthService,
               private route: ActivatedRoute,
-              private nav: NavController) { }
+              private nav: NavController,
+              private toast: ToastController) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
@@ -23,14 +23,13 @@ export class LoadGamePage implements OnInit {
         return;
       }
 
-      this.auth.setGameId(paramMap.get('id')).subscribe(
+      this.auth.setGameId(paramMap.get('id')).then(
           (response: Game) => {
             this.goToSubmit(response);
-          }, (error: HttpErrorResponse) => {
-            console.error('Error from set ID', error);
-            this.noAuth();
           }
-      );
+      ).catch(() => {
+          this.noAuth();
+      });
     });
   }
 
@@ -47,8 +46,17 @@ export class LoadGamePage implements OnInit {
       (response: Game) => {
         this.goToSubmit(response);
       }
-    ).catch(() => {
-        this.nav.navigateForward('/');
+    ).catch(async () => {
+        const toast = await this.toast.create({
+          header: 'Game not found',
+          message: 'Either the code was wrong or the game no longer exists',
+          position: 'top',
+          color: 'danger',
+          duration: 4000
+        });
+        toast.present().then(() => {
+          this.nav.navigateForward('/');
+        });
     });
   }
 

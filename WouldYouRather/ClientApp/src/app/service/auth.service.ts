@@ -35,26 +35,20 @@ export class AuthService implements OnInit {
       return !!this.player.id;
   }
 
-  public getGame(): Promise<Game> {
-    return new Promise<Game>(
-        (resolve, reject) => {
-          if (this.game) {
-            console.debug(`Returned game ${this.game.id} from memory`);
-            resolve(this.game);
-          } else {
-            if (this.getGameIdFromStore()) {
-              return this.setGameId(this.getGameIdFromStore()).subscribe(
-                (response) => {
-                  console.debug(`Returned game ${response.id} from local storage`);
-                  resolve(response);
-                });
-            } else {
-              console.debug(`Could not retrieve game`);
-              reject();
-            }
-          }
-        }
-    );
+  public async getGame(): Promise<Game> {
+    if (this.game) {
+      console.debug(`Returned game ${this.game.id} from memory`);
+      return this.game;
+    } else {
+      if (this.getGameIdFromStore()) {
+        const response = await this.setGameId(this.getGameIdFromStore());
+        console.debug(`Returned game ${response.id} from local storage`);
+        return response;
+      } else {
+        console.debug(`Could not retrieve game`);
+        throw new Error();
+      }
+    }
   }
 
   public getPlayer(): Promise<Player> {
@@ -94,14 +88,15 @@ export class AuthService implements OnInit {
     }));
   }
 
-  public setGameId(id: string): Observable<Game> {
-    return this.http.get(`${this.apiPath}/games/${id}`).pipe(map(
-        (response: Game) => {
-          this.game = response;
-          this.saveGameIdToStore();
-          return response;
-        }
-    ));
+  public async setGameId(id: string) {
+    try {
+      this.game = await this.http.get<Game>(`${this.apiPath}/games/${id}`).toPromise();
+      this.saveGameIdToStore();
+      return this.game;
+    } catch (e) {
+      console.debug('Returning error from http get', e.status);
+      throw new Error();
+    }
   }
 
   public getAuthKey(): string {
