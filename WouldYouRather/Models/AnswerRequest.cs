@@ -2,6 +2,6 @@ namespace WouldYouRather.Models
 {
     public class AnswerRequest
     {
-        public string Answer;
+        public string Answer { get; set; }
     }
 }

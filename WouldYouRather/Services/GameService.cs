@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 using WouldYouRather.Contexts;
 using WouldYouRather.Entities;
 using WouldYouRather.Models;
@@ -44,7 +45,7 @@ namespace WouldYouRather.Services
             return _gameContext.Games
                 .Where(x => x.Id == gameId)
                 .Select(x => GameResponse.FromGame(x))
-                .First();
+                .FirstOrDefault();
         }
 
         // TODO: Don't use something from StackExchange, make it securerandom especially for keys

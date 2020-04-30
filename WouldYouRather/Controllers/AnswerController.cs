@@ -31,6 +31,10 @@ namespace WouldYouRather.Controllers
                                         [FromBody] AnswerRequest answer)
         {
             _log.LogInformation($"Add an answer to {gameId}: {answer.Answer}");
+            if (answer.Answer == null)
+            {
+                return new StatusCodeResult(400);
+            }
             var ans = _answerService.AddAnswer(answer.Answer, gameId);
             if (ans == null)
             {
