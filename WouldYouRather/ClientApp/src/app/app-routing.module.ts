@@ -4,6 +4,15 @@ import {AuthGuard} from './service/auth.guard';
 
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'landing',
+    pathMatch: 'full'
+  },
+  {
+    path: 'landing',
+    loadChildren: () => import('./pages/landing/landing.module').then( m => m.LandingPageModule)
+  },
+  {
     path: 'tabs',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
     canActivate: [AuthGuard]
@@ -17,17 +26,8 @@ const routes: Routes = [
     loadChildren: () => import('./auth/load-game/load-game.module').then( m => m.LoadGamePageModule)
   },
   {
-    path: '',
-    redirectTo: 'landing',
-    pathMatch: 'full'
-  },
-  {
     path: 'enter-name',
     loadChildren: () => import('./auth/enter-name/enter-name.module').then( m => m.EnterNamePageModule)
-  },
-  {
-    path: 'landing',
-    loadChildren: () => import('./pages/landing/landing.module').then( m => m.LandingPageModule)
   }
 ];
 @NgModule({

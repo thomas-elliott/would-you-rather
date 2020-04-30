@@ -23,7 +23,8 @@
                        [(ngModel)]="code">
             </ion-input>
 
-            <ion-button (click)="submitCode()">Find</ion-button>
+            <ion-button (click)="submitCode()"
+                        [disabled]="!(code && code.length == 6)">Find</ion-button>
           </ion-card-content>
         </ion-card>
       </ion-col>

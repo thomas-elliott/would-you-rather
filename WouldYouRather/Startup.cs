@@ -37,7 +37,8 @@ namespace WouldYouRather
                 if (connStr == null) {
                     throw new NullReferenceException("No connection string provided as env var PG_CONN_STR");
                 }
-                options.UseNpgsql(connStr);
+                options.UseNpgsql(connStr)
+                       .UseSnakeCaseNamingConvention();
             });
             
             services.AddSwaggerGen(c =>
