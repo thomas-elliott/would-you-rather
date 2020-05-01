@@ -37,6 +37,13 @@ namespace WouldYouRather.Controllers
         [HttpDelete("{playerId}")]
         public IActionResult RemovePlayer(string playerId)
         {
+            if (!_playerService.IsAdmin(
+                Request.Headers["x-player-id"],
+                Request.Headers["x-auth-key"]
+                ))
+            {
+                return new StatusCodeResult(403);
+            }
             _log.LogInformation($"Deleting player {playerId}");
             var player = _playerService.RemovePlayer(playerId);
             return new JsonResult(player);

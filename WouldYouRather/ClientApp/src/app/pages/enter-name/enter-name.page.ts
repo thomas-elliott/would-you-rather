@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../service/auth.service';
-import {HttpErrorResponse} from '@angular/common/http';
 import {NavController} from '@ionic/angular';
 import {Player} from '../../model/player.model';
 
@@ -35,14 +34,12 @@ export class EnterNamePage implements OnInit {
 
   submit() {
     this.loading = true;
-    this.authService.registerPlayer(this.name).subscribe(
-        () => {
-          this.goToSubmit();
-        },
-        (error: HttpErrorResponse) => {
-          this.loading = false;
-          console.log('Error returned from register player', error);
-          alert('Error submitting');
+    this.authService.registerPlayer(this.name).then(() => {
+      this.goToSubmit();
+    }).catch(() => {
+      this.loading = false;
+      console.log('Error returned from register player');
+      alert('Error submitting');
     });
   }
 

@@ -1,10 +1,8 @@
 import {Injectable, OnInit} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Game} from '../model/game.model';
 
-import {map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
 import {Player} from '../model/player.model';
 import {Auth} from '../model/auth.model';
 
@@ -37,55 +35,50 @@ export class AuthService implements OnInit {
 
   public async getGame(): Promise<Game> {
     if (this.game) {
-      console.debug(`Returned game ${this.game.id} from memory`);
+      console.debug(`Returned game ${this.game.id} from memory`, this.game);
       return this.game;
+    }
+
+    if (this.getGameIdFromStore()) {
+      const response = await this.setGameId(this.getGameIdFromStore());
+      console.debug(`Returned game ${response.id} from local storage`, this.game);
+      return response;
+    }
+
+    console.debug(`Could not retrieve game`);
+    throw new Error();
+  }
+
+  public async getPlayer(): Promise<Player> {
+    // Make sure we have the game
+    await this.getGame();
+
+    if (this.hasAuth()) {
+      console.debug('Returning player from memory');
+      return this.player;
+    }
+
+    if (this.getPlayerFromStore()) {
+      console.debug('Returning player from store');
+      return this.player;
     } else {
-      if (this.getGameIdFromStore()) {
-        const response = await this.setGameId(this.getGameIdFromStore());
-        console.debug(`Returned game ${response.id} from local storage`);
-        return response;
-      } else {
-        console.debug(`Could not retrieve game`);
-        throw new Error();
-      }
+      console.debug('Could not retrieve player locally');
+      throw new Error();
     }
   }
 
-  public getPlayer(): Promise<Player> {
-    return new Promise<Player>(
-        (resolve, reject) => {
-            this.getGame().then(() => {
-            if (this.hasAuth()) {
-                console.debug('Returning player from memory');
-                resolve(this.player);
-            } else {
-                if (this.getPlayerFromStore()) {
-                  console.debug('Returning player from store');
-                  resolve(this.player);
-                } else {
-                  console.debug('Could not retrieve player locally');
-                  reject();
-                }
-            }});
-        }
-    );
-  }
+  public async registerPlayer(playerName: string) {
+    try {
+      const player = await this.http.post<Auth>(`${this.apiPath}/players`, new Player(playerName)).toPromise();
+      this.player = new Player(player.id, player.name);
 
-  // TODO: Requires game to be set first
-  public registerPlayer(playerName: string): Observable<Player> {
-    const player = new Player(playerName);
-    return this.http.post(`${this.apiPath}/games/${this.game.id}/player`,
-        player,
-        {observe: 'response'}).pipe(map(
-        (response: HttpResponse<Auth>) => {
-            console.log('Auth response from registration: ', response);
-            const auth = response.body;
-            this.player = auth.player;
-            this.isAdmin = auth.admin;
-            this.secretKey = response.headers.get('x-auth-key');
-            this.savePlayerToStore();
-            return auth.player;
-    }));
+      this.secretKey = player.authKey;
+      this.isAdmin = player.admin;
+      this.savePlayerToStore();
+      return this.player;
+    } catch {
+      throw new Error();
+    }
   }
 
   public async setGameId(id: string) {

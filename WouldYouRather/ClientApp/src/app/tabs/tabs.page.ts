@@ -20,15 +20,15 @@ export class TabsPage implements OnInit {
   }
 
   showPlayers(): boolean {
-    return this.game && this.game.active;
+    return this.game && this.game.isActive;
   }
 
   showPlay(): boolean {
-    return this.game && this.game.active;
+    return this.game && this.game.isActive;
   }
 
   showSubmit(): boolean {
-    return this.game && !this.game.active;
+    return this.game && !this.game.isActive;
   }
 
   showSettings(): boolean {

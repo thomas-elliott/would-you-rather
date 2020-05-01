@@ -20,6 +20,20 @@ namespace WouldYouRather.Services
             _gameContext = gameContext;
             _log = log;
         }
+
+        public bool IsAdmin(string playerId, string authKey)
+        {
+            var player = _gameContext.Players.Find(playerId);
+            if (player == null) return false;
+            return player.AuthKey == authKey && player.IsAdmin;
+        }
+
+        public bool IsAuth(string playerId, string authKey)
+        {
+            var player = _gameContext.Players.Find(playerId);
+            if (player == null) return false;
+            return player.AuthKey == authKey;
+        }
         
         public List<PlayerResponse> GetPlayers()
         {
@@ -41,7 +55,7 @@ namespace WouldYouRather.Services
             return true;
         }
 
-        public PlayerResponse AddPlayer(string name)
+        public Player AddPlayer(string name)
         {
             _log.LogInformation($"Adding new player {name}");
             
@@ -54,7 +68,7 @@ namespace WouldYouRather.Services
                 });
             _gameContext.SaveChanges();
 
-            return PlayerResponse.FromPlayer(player.Entity);
+            return player.Entity;
         }
     }
 }
