@@ -1,5 +1,6 @@
 export class Game {
     id: string;
-    isActive: boolean;
+    isPlaying: boolean;
+    isLobbyOpen: boolean;
     isAcceptingSubmissions: boolean;
 }

@@ -41,7 +41,7 @@ export class LoadGamePage implements OnInit {
   }
 
   goToSubmit(game: Game) {
-    if (game.isActive) {
+    if (game.isPlaying || game.isLobbyOpen) {
       this.nav.navigateForward('/enter-name');
     } else {
       this.nav.navigateForward('/tabs/submit');

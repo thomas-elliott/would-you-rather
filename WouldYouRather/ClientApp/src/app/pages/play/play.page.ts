@@ -6,7 +6,7 @@ import {Game} from '../../model/game.model';
 import {AuthService} from '../../service/auth.service';
 import {Choice} from '../../model/choice.model';
 import {WebsocketService} from '../../service/websocket.service';
-import {GameInfo} from '../../model/gameInfo.model';
+import {GameStatus} from '../../model/gameInfo.model';
 
 @Component({
   selector: 'app-play',
@@ -16,7 +16,7 @@ import {GameInfo} from '../../model/gameInfo.model';
 export class PlayPage implements OnInit, OnDestroy {
   stateSubscription: Subscription;
   game: Game;
-  gameInfo: GameInfo;
+  gameInfo: GameStatus;
   choice: Choice;
   ready = false;
 
@@ -52,7 +52,7 @@ export class PlayPage implements OnInit, OnDestroy {
 
   getGameInfo() {
     this.gameService.getGameInfo(this.game.id).then(
-        (info: GameInfo) => {
+        (info: GameStatus) => {
           this.gameInfo = info;
         }
     );

@@ -1,6 +1,6 @@
 import {Player} from './player.model';
 
-export class GameInfo {
+export class GameStatus {
     noOfPlayers: number;
     remainingQuestions: number;
     hasWon: boolean;

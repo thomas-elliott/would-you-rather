@@ -7,7 +7,7 @@ import {Game} from '../model/game.model';
 import {Player} from '../model/player.model';
 import {AuthService} from './auth.service';
 import {Choice} from '../model/choice.model';
-import {GameInfo} from '../model/gameInfo.model';
+import {GameStatus} from '../model/gameInfo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,7 @@ export class GameService {
   public getPlayers(): Promise<Player[]> {
     return new Promise<Player[]> ((resolve, reject) => {
       this.authService.getGame().then((game: Game) => {
-        this.http.get(`${this.apiPath}/games/${game.id}/player`).subscribe(
+        this.http.get(`${this.apiPath}/play/${game.id}/players`).subscribe(
           (response: Player[]) => {
             resolve(response);
           }, (error) => {
@@ -86,10 +86,10 @@ export class GameService {
     });
   }
 
-  public getGameInfo(gameId: string): Promise<GameInfo> {
-    return new Promise<GameInfo>((resolve) => {
+  public getGameInfo(gameId: string): Promise<GameStatus> {
+    return new Promise<GameStatus>((resolve) => {
       this.http.get(`${this.apiPath}/games/${gameId}/info`).subscribe(
-        (response: GameInfo) => {
+        (response: GameStatus) => {
           resolve(response);
         },
         (error) => {
