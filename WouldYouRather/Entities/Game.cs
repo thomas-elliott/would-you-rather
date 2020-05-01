@@ -9,8 +9,9 @@ namespace WouldYouRather.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
-        public bool IsActive { get; set; }
         public bool IsAcceptingSubmissions { get; set; }
+        public bool IsLobbyOpen { get; set; }
+        public bool IsPlaying { get; set; }
         [Column(TypeName = "jsonb")]
         public Config Config { get; set; }
         public List<Answer> Answers { get; set; }
