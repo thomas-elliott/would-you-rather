@@ -1,6 +1,8 @@
 import {Player} from './player.model';
 
 export class Auth {
-    admin: boolean;
-    player: Player;
+  id: string;
+  authKey: string;
+  name: string;
+  admin: boolean;
 }

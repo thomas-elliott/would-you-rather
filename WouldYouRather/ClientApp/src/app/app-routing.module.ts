@@ -5,12 +5,12 @@ import {AuthGuard} from './service/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'landing',
+    redirectTo: 'load-game',
     pathMatch: 'full'
   },
   {
-    path: 'landing',
-    loadChildren: () => import('./pages/landing/landing.module').then( m => m.LandingPageModule)
+    path: 'load-game',
+    loadChildren: () => import('./pages/load-game/load-game.module').then( m => m.LoadGamePageModule)
   },
   {
     path: 'tabs',
@@ -19,15 +19,15 @@ const routes: Routes = [
   },
   {
     path: 'submit/:id',
-    loadChildren: () => import('./auth/load-game/load-game.module').then( m => m.LoadGamePageModule)
+    loadChildren: () => import('./pages/load-game/load-game.module').then( m => m.LoadGamePageModule)
   },
   {
     path: 'play/:id',
-    loadChildren: () => import('./auth/load-game/load-game.module').then( m => m.LoadGamePageModule)
+    loadChildren: () => import('./pages/load-game/load-game.module').then( m => m.LoadGamePageModule)
   },
   {
     path: 'enter-name',
-    loadChildren: () => import('./auth/enter-name/enter-name.module').then( m => m.EnterNamePageModule)
+    loadChildren: () => import('./pages/enter-name/enter-name.module').then( m => m.EnterNamePageModule)
   }
 ];
 @NgModule({

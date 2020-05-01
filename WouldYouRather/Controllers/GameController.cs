@@ -10,13 +10,16 @@ namespace WouldYouRather.Controllers
     {
         private ILogger<GameController> _log;
 
-        private GameService _gameService;
+        private readonly GameService _gameService;
+        private readonly PlayerService _playerService;
         
         public GameController(ILogger<GameController> log,
-                              GameService gameService)
+                              GameService gameService,
+                              PlayerService playerService)
         {
             _log = log;
             _gameService = gameService;
+            _playerService = playerService;
         }
         
         [HttpGet]
@@ -43,6 +46,14 @@ namespace WouldYouRather.Controllers
         [HttpPost]
         public IActionResult CreateGame()
         {
+            if (!_playerService.IsAdmin(
+                Request.Headers["x-player-id"],
+                Request.Headers["x-auth-key"]
+            ))
+            {
+                return new StatusCodeResult(403);
+            }
+            
             var game = _gameService.CreateGame();
             
             _log.LogInformation("Created new game");
