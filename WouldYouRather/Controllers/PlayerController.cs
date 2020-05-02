@@ -27,6 +27,27 @@ namespace WouldYouRather.Controllers
             return new JsonResult(players);
         }
 
+        [HttpGet("{playerId}")]
+        public IActionResult GetPlayer(string playerId)
+        {
+            var player = _playerService.GetPlayer(playerId);
+
+            if (player == null)
+            {
+                return new StatusCodeResult(404);
+            }
+            
+            if (!_playerService.IsAuth(
+                Request.Headers["x-player-id"],
+                Request.Headers["x-auth-key"]
+            ))
+            {
+                return new StatusCodeResult(403);
+            }
+            
+            return new StatusCodeResult(200);
+        }
+
         [HttpPost]
         public IActionResult RegisterPlayer([FromBody] PlayerRequest request)
         {

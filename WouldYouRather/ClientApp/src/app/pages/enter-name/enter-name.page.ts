@@ -17,6 +17,10 @@ export class EnterNamePage implements OnInit {
               private nav: NavController) { }
 
   ngOnInit() {
+    if (!this.authService.hasGame()) {
+      this.nav.navigateBack('/');
+    }
+
     this.authService.getPlayer().then((player: Player) => {
       if (player && player.id) {
         this.goToSubmit();
@@ -43,7 +47,15 @@ export class EnterNamePage implements OnInit {
     });
   }
 
-  goToSubmit() {
-    this.nav.navigateForward('/tabs/play');
+  async goToSubmit() {
+    const game = await this.authService.getGame();
+
+    try {
+      await this.authService.joinGame(game.id);
+    } catch (e) {
+      console.error('Join error', e);
+    }
+
+    await this.nav.navigateForward('/tabs/play');
   }
 }

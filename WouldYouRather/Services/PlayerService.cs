@@ -35,6 +35,13 @@ namespace WouldYouRather.Services
             return player.AuthKey == authKey;
         }
         
+        public PlayerResponse GetPlayer(string playerId)
+        {
+            var player = _gameContext.Players.Find(playerId);
+
+            return player == null ? null : PlayerResponse.FromPlayer(player);
+        }
+        
         public List<PlayerResponse> GetPlayers()
         {
             _log.LogInformation($"Get all players");

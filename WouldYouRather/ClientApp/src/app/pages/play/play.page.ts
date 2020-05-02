@@ -38,12 +38,12 @@ export class PlayPage implements OnInit, OnDestroy {
       this.ready = true;
     });
 
-    this.stateSubscription = this.wsService.newChoiceSubject.subscribe(() => {
+/*    this.stateSubscription = this.wsService.newChoiceSubject.subscribe(() => {
       console.log('New choice subject');
       this.getCurrentChoice();
       this.getGameInfo();
       this.ready = true;
-    });
+    });*/
   }
 
   ngOnDestroy(): void {

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WouldYouRather.Services;
@@ -51,6 +52,24 @@ namespace WouldYouRather.Controllers
             var status = _playService.JoinGame(gameId, playerId);
 
             return new JsonResult(status);
+        }
+
+        [HttpDelete("players/{playerId}")]
+        public IActionResult RemovePlayer(string gameId, string playerId)
+        {
+            if (!_playerService.IsAdmin(
+                Request.Headers["x-player-id"],
+                Request.Headers["x-auth-key"]
+            ))
+            {
+                return new StatusCodeResult(403);
+            }
+            
+            _log.LogInformation($"Removing {playerId} from {gameId}");
+            
+            _playService.RemovePlayer(gameId, playerId);
+            
+            return new StatusCodeResult(204);
         }
 
         [HttpGet("players")]
