@@ -35,13 +35,13 @@ export class AuthService implements OnInit {
 
   public async getGame(): Promise<Game> {
     if (this.game) {
-      console.debug(`Returned game ${this.game.id} from memory`, this.game);
+      console.debug(`Returned game ${this.game.id} from memory`);
       return this.game;
     }
 
     if (this.getGameIdFromStore()) {
       const response = await this.setGameId(this.getGameIdFromStore());
-      console.debug(`Returned game ${response.id} from local storage`, this.game);
+      console.debug(`Returned game ${response.id} from local storage`);
       return response;
     }
 
@@ -55,22 +55,37 @@ export class AuthService implements OnInit {
 
     if (this.hasAuth()) {
       console.debug('Returning player from memory');
-      return this.player;
+    } else {
+      if (this.getPlayerFromStore()) {
+        console.debug('Returning player from store');
+      } else {
+        console.debug('Could not retrieve player locally');
+        throw new Error();
+      }
     }
 
-    if (this.getPlayerFromStore()) {
-      console.debug('Returning player from store');
-      return this.player;
-    } else {
-      console.debug('Could not retrieve player locally');
-      throw new Error();
+    console.debug('Checking player against server', this.player);
+    await this.checkPlayer(this.player.id);
+    // TODO: remove saved settings if the server can't validate it?
+
+    return this.player;
+  }
+
+  public async checkPlayer(playerId: string) {
+    try {
+      const player = await this.http.get(`${this.apiPath}/players/${playerId}`).toPromise();
+
+      return player;
+    } catch (e) {
+      console.log('Error while checking player against server', e);
+      throw new Error(e);
     }
   }
 
   public async registerPlayer(playerName: string) {
     try {
       const player = await this.http.post<Auth>(`${this.apiPath}/players`, new Player(playerName)).toPromise();
-      this.player = new Player(player.id, player.name);
+      this.player = new Player(player.name, player.id);
 
       this.secretKey = player.authKey;
       this.isAdmin = player.admin;
@@ -80,6 +95,17 @@ export class AuthService implements OnInit {
       throw new Error();
     }
   }
+
+  public async joinGame(gameId: string) {
+    try {
+      const player = await this.http.post<Player>(`${this.apiPath}/play/${gameId}`, {}).toPromise();
+
+      return player;
+    } catch {
+      throw new Error();
+    }
+  }
+
 
   public async setGameId(id: string) {
     try {

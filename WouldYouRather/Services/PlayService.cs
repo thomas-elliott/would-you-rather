@@ -13,9 +13,6 @@ namespace WouldYouRather.Services
         private readonly GameContext _gameContext;
         private readonly ILogger<PlayService> _log;
 
-        private Game _game;
-        private List<Player> _players = new List<Player>();
-
         public PlayService(ILogger<PlayService> log,
                            GameContext gameContext)
         {
@@ -25,34 +22,34 @@ namespace WouldYouRather.Services
 
         public void LoadGame(string gameId)
         {
-            _game = GetGame(gameId);
+            _log.LogInformation($"Loading game {gameId}");
+            var game = GetGame(gameId);
+            game.StartLobby();
+            _gameContext.Games.Update(game);
+            _gameContext.SaveChanges();
         }
 
         public void StartGame(string gameId)
         {
-            if (_game == null || _game.Id != gameId)
-            {
-                LoadGame(gameId);
-            }
-
-            // TODO: Save this back to the database?
-            _game.IsPlaying = true;
+            _log.LogInformation($"Starting game {gameId}");
+            var game = GetGame(gameId);
+            game.StartPlaying();
+            _gameContext.Games.Update(game);
+            _gameContext.SaveChanges();
         }
 
         public GameStatusResponse GetStatus(string gameId, string playerId)
         {
-            if (_game == null || _game.Id != gameId)
-            {
-                return null;
-            }
-            
-            var status = new GameStatusResponse
-            {
-                
-            };
-            throw new NotImplementedException();
+            var status = _gameContext.GameState
+                .FirstOrDefault(g => g.GameId == gameId);
 
-            return status;
+            if (status == null) return null;
+            
+            var gameStatus = GameStatusResponse.FromStatus(status);
+            gameStatus.IsCurrentChoice = gameStatus.ChoosingPlayer.Id == playerId;
+            gameStatus.RemainingQuestions = RemainingQuestions(gameId);
+
+            return gameStatus;
         }
 
         public GameStatusResponse MakeChoice()
@@ -63,45 +60,49 @@ namespace WouldYouRather.Services
             return status;
         }
 
+        public GameStatusResponse RejectChoice()
+        {
+            throw new NotImplementedException();
+        }
+
         public GameStatusResponse JoinGame(string gameId, string playerId)
         {
-            if (gameId != _game?.Id)
+            var player = GetPlayer(playerId);
+
+            if (player == null)
             {
                 return null;
             }
 
-            var player = GetPlayer(playerId);
-
-            if (player != null)
-            {
-                _players.Add(player);
-            }
+            player.Game = GetGame(gameId);
+            _gameContext.Players.Update(player);
+            _gameContext.SaveChanges();
 
             return GetStatus(gameId, playerId);
         }
 
         public void RemovePlayer(string gameId, string playerId)
         {
-            if (_game == null || _game.Id != gameId)
-            {
-                return;
-            }
-
-            var player = _players.First(p => p.Id == playerId);
+            var player = _gameContext.Players.First(p => p.Id == playerId);
             if (player != null)
             {
-                _players.Remove(player);
+                _gameContext.Players.Remove(player);
+                _gameContext.SaveChanges();
             }
         }
 
         public List<PlayerResponse> GetPlayers(string gameId)
         {
-            if (_game == null || _game.Id != gameId)
-            {
-                return null;
-            }
+            return _gameContext.Players
+                .Where(p => p.GameId == gameId)
+                .Select(p => PlayerResponse.FromPlayer(p))
+                .ToList();
+        }
 
-            return _players.ConvertAll(PlayerResponse.FromPlayer);
+        private int RemainingQuestions(string gameId)
+        {
+            return _gameContext.Answers
+                .Count(a => a.GameId == gameId && !a.IsEliminated);
         }
 
         private Player GetPlayer(string playerId)

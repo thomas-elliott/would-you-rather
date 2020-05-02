@@ -15,5 +15,26 @@ namespace WouldYouRather.Entities
         [Column(TypeName = "jsonb")]
         public Config Config { get; set; }
         public List<Answer> Answers { get; set; }
+
+        public void StartSubmissions()
+        {
+            IsPlaying = false;
+            IsLobbyOpen = false;
+            IsAcceptingSubmissions = true;
+        }
+
+        public void StartLobby()
+        {
+            IsPlaying = false;
+            IsLobbyOpen = true;
+            IsAcceptingSubmissions = false;
+        }
+
+        public void StartPlaying()
+        {
+            IsPlaying = true;
+            IsLobbyOpen = true;
+            IsAcceptingSubmissions = true;
+        }
     }
 }

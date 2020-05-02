@@ -13,5 +13,6 @@ namespace WouldYouRather.Contexts
         public DbSet<Game> Games { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Player> Players { get; set; }
+        public DbSet<GameStatus> GameState { get; set; }
     }
 }

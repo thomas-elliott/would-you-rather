@@ -26,17 +26,10 @@ export class GameService {
     });
   }
 
-  public getPlayers(): Promise<Player[]> {
-    return new Promise<Player[]> ((resolve, reject) => {
-      this.authService.getGame().then((game: Game) => {
-        this.http.get(`${this.apiPath}/play/${game.id}/players`).subscribe(
-          (response: Player[]) => {
-            resolve(response);
-          }, (error) => {
-            reject(error);
-        });
-      });
-    });
+  public async getPlayers(): Promise<Player[]> {
+    const game = await this.authService.getGame();
+
+    return this.http.get<Player[]>(`${this.apiPath}/play/${game.id}/players`).toPromise();
   }
 
   public getChoice(gameId: string): Promise<Choice> {
