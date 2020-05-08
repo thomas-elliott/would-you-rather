@@ -11,6 +11,11 @@ namespace WouldYouRather.Models
 
         public static PlayerResponse FromPlayer(Player player)
         {
+            if (player == null)
+            {
+                return null;
+            }
+            
             return new PlayerResponse
             {
                 Id = player.Id,

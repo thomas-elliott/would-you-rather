@@ -1,5 +1,5 @@
 <ion-toolbar color="secondary" class="ion-text-center" *ngIf="choosingPlayer && !amIPlaying()">
-  <ion-text *ngIf="gameInfo && gameInfo.whoIsChoosing">{{gameInfo.whoIsChoosing.name}} is picking</ion-text>
+  <ion-text *ngIf="gameStatus && gameStatus.whoIsChoosing">{{gameStatus.whoIsChoosing.name}} is picking</ion-text>
 </ion-toolbar>
 <ion-toolbar color="warning" class="ion-text-center" *ngIf="choosingPlayer && amIPlaying()">
   <ion-text>
@@ -16,7 +16,7 @@
           <ion-card-header>
             <ion-card-title>Waiting...</ion-card-title>
             <ion-card-subtitle>
-              <ion-text *ngIf="gameInfo && gameInfo.whoIsChoosing">{{gameInfo.whoIsChoosing.name}} is picking</ion-text>
+              <ion-text *ngIf="gameStatus && gameStatus.whoIsChoosing">{{gameStatus.whoIsChoosing.name}} is picking</ion-text>
             </ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
@@ -45,7 +45,7 @@
                 <ion-icon name="trash-outline"></ion-icon>
                 <ion-label>This is mine</ion-label>
               </ion-button>
-              <ion-button (click)="acceptChoice(true)" *ngIf="this.gameInfo && this.gameInfo.remainingQuestions > 1">
+              <ion-button (click)="acceptChoice(true)" *ngIf="this.gameStatus && this.gameStatus.remainingQuestions > 1">
                 <ion-icon name="checkmark-outline"></ion-icon>
                 <ion-label>Pick</ion-label>
               </ion-button>
@@ -69,16 +69,16 @@
                 <ion-icon name="trash-outline"></ion-icon>
                 <ion-label>This is mine</ion-label>
               </ion-button>
-              <ion-button (click)="acceptChoice(false)" *ngIf="this.gameInfo && this.gameInfo.remainingQuestions > 1">
+              <ion-button (click)="acceptChoice(false)" *ngIf="this.gameStatus && this.gameStatus.remainingQuestions > 1">
                 <ion-icon name="checkmark-outline"></ion-icon>
                 <ion-label>Pick</ion-label>
               </ion-button>
             </div>
           </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="!!gameInfo">
+        <ion-card *ngIf="!!gameStatus">
           <ion-card-content>
-            Remaining Questions: {{gameInfo.remainingQuestions}}
+            Remaining Questions: {{gameStatus.remainingQuestions}}
           </ion-card-content>
         </ion-card>
       </ion-col>

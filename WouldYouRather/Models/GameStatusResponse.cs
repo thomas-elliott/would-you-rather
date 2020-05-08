@@ -9,6 +9,7 @@ namespace WouldYouRather.Models
         public PlayerResponse ChoosingPlayer { get; set; }
         public int RemainingQuestions { get; set; }
         public bool IsCurrentChoice { get; set; }
+        public bool CanReject { get; set; } 
 
         public static GameStatusResponse FromStatus(GameStatus status)
         {

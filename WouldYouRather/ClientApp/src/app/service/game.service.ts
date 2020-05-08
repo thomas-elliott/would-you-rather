@@ -3,11 +3,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import {Game} from '../model/game.model';
 import {Player} from '../model/player.model';
 import {AuthService} from './auth.service';
-import {Choice} from '../model/choice.model';
-import {GameStatus} from '../model/gameInfo.model';
+import {GameStatus} from '../model/gameStatus.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +30,9 @@ export class GameService {
     return this.http.get<Player[]>(`${this.apiPath}/play/${game.id}/players`).toPromise();
   }
 
-  public getChoice(gameId: string): Promise<Choice> {
+  public getChoice(gameId: string) {
     console.debug('Getting choice');
-    return new Promise<Choice> (((resolve, reject) => {
+/*    return new Promise<Choice> (((resolve, reject) => {
       this.http.get(`${this.apiPath}/games/${gameId}/choice`).subscribe(
           (response: Choice) => {
             console.debug('Returned choice', response);
@@ -45,11 +43,11 @@ export class GameService {
             reject(error);
           }
       );
-    }));
+    }));*/
   }
 
-  public acceptChoice(choice: Choice, gameId: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+  public acceptChoice(choiceId: string, gameId: string) {
+/*    return new Promise<void>((resolve, reject) => {
       this.http.post(`${this.apiPath}/games/${gameId}/choose`,
           choice).subscribe(
           () => {
@@ -60,12 +58,12 @@ export class GameService {
             reject(error);
           }
       );
-    });
+    });*/
   }
 
-  public rejectChoice(choice: Choice, gameId: string): Promise<Choice> {
+  public rejectChoice(choice: string, gameId: string) {
     console.debug('Rejecting choice: ', choice);
-    return new Promise<Choice>((resolve, reject) => {
+/*    return new Promise<Choice>((resolve, reject) => {
       this.http.post(`${this.apiPath}/games/${gameId}/reject`,
         choice).subscribe(
         (response: Choice) => {
@@ -76,19 +74,10 @@ export class GameService {
           reject(error);
         }
       );
-    });
+    });*/
   }
 
-  public getGameInfo(gameId: string): Promise<GameStatus> {
-    return new Promise<GameStatus>((resolve) => {
-      this.http.get(`${this.apiPath}/games/${gameId}/info`).subscribe(
-        (response: GameStatus) => {
-          resolve(response);
-        },
-        (error) => {
-          console.error('Error getting game info ', error);
-        }
-      );
-    });
+  public async getGameInfo(gameId: string): Promise<GameStatus> {
+    return await this.http.get<GameStatus>(`${this.apiPath}/play/${gameId}`).toPromise();
   }
 }

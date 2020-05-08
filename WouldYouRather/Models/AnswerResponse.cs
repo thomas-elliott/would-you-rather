@@ -16,6 +16,8 @@ namespace WouldYouRather.Models
 
         public static AnswerResponse FromAnswer(Answer answer)
         {
+            if (answer == null) return null;
+            
             return new AnswerResponse()
             {
                 Id = answer.Id,
