@@ -56,6 +56,10 @@ export class EnterNamePage implements OnInit {
       console.error('Join error', e);
     }
 
-    await this.nav.navigateForward('/tabs/play');
+    if (game.isPlaying) {
+      await this.nav.navigateForward('/tabs/play');
+    } else {
+      await this.nav.navigateForward('/lobby');
+    }
   }
 }

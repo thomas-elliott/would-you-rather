@@ -28,6 +28,10 @@ const routes: Routes = [
   {
     path: 'enter-name',
     loadChildren: () => import('./pages/enter-name/enter-name.module').then( m => m.EnterNamePageModule)
+  },
+  {
+    path: 'lobby',
+    loadChildren: () => import('./pages/lobby/lobby.module').then( m => m.LobbyPageModule)
   }
 ];
 @NgModule({

@@ -5,7 +5,7 @@ import {GameService} from '../../service/game.service';
 import {Game} from '../../model/game.model';
 import {AuthService} from '../../service/auth.service';
 import {GameStatus} from '../../model/gameStatus.model';
-import {NavController} from "@ionic/angular";
+import {NavController} from '@ionic/angular';
 
 @Component({
   selector: 'app-play',
