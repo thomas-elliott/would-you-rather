@@ -4,9 +4,8 @@ import {Subscription} from 'rxjs';
 import {GameService} from '../../service/game.service';
 import {Game} from '../../model/game.model';
 import {AuthService} from '../../service/auth.service';
-import {Choice} from '../../model/choice.model';
-import {WebsocketService} from '../../service/websocket.service';
-import {GameStatus} from '../../model/gameInfo.model';
+import {GameStatus} from '../../model/gameStatus.model';
+import {NavController} from "@ionic/angular";
 
 @Component({
   selector: 'app-play',
@@ -14,24 +13,24 @@ import {GameStatus} from '../../model/gameInfo.model';
   styleUrls: ['./play.page.scss'],
 })
 export class PlayPage implements OnInit, OnDestroy {
-  stateSubscription: Subscription;
+  // stateSubscription: Subscription;
   game: Game;
-  gameInfo: GameStatus;
-  choice: Choice;
+  gameStatus: GameStatus;
   ready = false;
 
   choosingPlayer: Player;
 
   constructor(private authService: AuthService,
               private gameService: GameService,
-              private wsService: WebsocketService) { }
+              private nav: NavController) { }
 
   ngOnInit(): void {
     this.authService.getGame().then(
-      (game) => {
+      (game: Game) => {
         this.game = game;
-        this.getCurrentChoice();
-        this.getGameInfo();
+        if (game && game.isPlaying) {
+          this.getGameInfo();
+        }
       }
     ).catch((error) => {
       console.error('Play: error getting game auth', error);
@@ -47,57 +46,35 @@ export class PlayPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.stateSubscription.unsubscribe();
+    // this.stateSubscription.unsubscribe();
   }
 
-  getGameInfo() {
+  getGameInfo(): void {
     this.gameService.getGameInfo(this.game.id).then(
         (info: GameStatus) => {
-          this.gameInfo = info;
+          console.debug('Game info', info);
+          if (info == null) {
+            this.nav.navigateBack(['/load-game'], { queryParams: { error: 'gameNotStarted'} });
+          }
+          this.gameStatus = info;
         }
-    );
-  }
-
-  getCurrentChoice() {
-    this.gameService.getChoice(this.game.id).then(
-      (choice) => {
-        this.choice = choice;
-        if (choice) {
-          this.choosingPlayer = this.choice.choosingPlayer;
-        }
-        this.ready = true;
-      }
-    ).catch((error) => {
-      console.error('Play: error getting current choice', error);
-      this.ready = true;
+    ).catch((e) => {
+      console.error(`Couldn't load game: ${e.status}`);
+      this.nav.navigateBack(['/load-game'], { queryParams: { error: 'gameNotFound'} });
     });
   }
 
   amIPlaying(): boolean {
-    if (!this.choice) {
-      return false;
-    }
-    return this.choice.currentChoice;
-  }
-
-  isChoice(isA: boolean): boolean {
-    if (!this.choice) {
-      return false;
-    }
-
-    if (isA && this.choice.choiceIsA === true) {
-      return true;
-    }
-
-    if (!isA && this.choice.choiceIsA === false) {
-      return true;
-    }
-
     return false;
   }
 
+  isChoice(isA: boolean): boolean {
+    return true;
+  }
+
   acceptChoice(isA: boolean) {
-    this.ready = false;
+    console.log('accept choice');
+/*    this.ready = false;
     const choice = this.choice;
     choice.choiceIsA = isA;
     this.gameService.acceptChoice(choice, this.game.id).then(
@@ -106,11 +83,12 @@ export class PlayPage implements OnInit, OnDestroy {
         }
     ).catch((error) => {
       console.error('Error accepting choice: ', error);
-    });
+    });*/
   }
 
   rejectChoice(isA: boolean) {
-    this.ready = false;
+    console.log('reject choice');
+/*    this.ready = false;
     console.debug('Rejecting choice A: ', isA);
     const choice = this.choice;
     choice.choiceIsA = isA;
@@ -122,10 +100,10 @@ export class PlayPage implements OnInit, OnDestroy {
         }
     ).catch((error) => {
       console.error('Error rejecting choice: ', error);
-    });
+    });*/
   }
 
   allowReject(): boolean {
-    return this.gameInfo && this.gameInfo.remainingQuestions > (3 + this.gameInfo.noOfPlayers);
+    return this.gameStatus && this.gameStatus.canReject;
   }
 }

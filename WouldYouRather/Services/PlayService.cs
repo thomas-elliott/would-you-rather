@@ -34,6 +34,10 @@ namespace WouldYouRather.Services
             _log.LogInformation($"Starting game {gameId}");
             var game = GetGame(gameId);
             game.StartPlaying();
+            
+            var gameStatus = new GameStatus {Game = game};
+
+            _gameContext.GameState.Add(gameStatus);
             _gameContext.Games.Update(game);
             _gameContext.SaveChanges();
         }
@@ -46,7 +50,7 @@ namespace WouldYouRather.Services
             if (status == null) return null;
             
             var gameStatus = GameStatusResponse.FromStatus(status);
-            gameStatus.IsCurrentChoice = gameStatus.ChoosingPlayer.Id == playerId;
+            gameStatus.IsCurrentChoice = gameStatus.ChoosingPlayer?.Id == playerId;
             gameStatus.RemainingQuestions = RemainingQuestions(gameId);
 
             return gameStatus;
