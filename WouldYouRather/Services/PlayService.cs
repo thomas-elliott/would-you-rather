@@ -14,6 +14,10 @@ namespace WouldYouRather.Services
         private readonly GameContext _gameContext;
         private readonly ILogger<PlayService> _log;
 
+        // TODO: Don't keep it in memory?
+        private AnswerResponse previousChoiceA = null;
+        private AnswerResponse previousChoiceB = null;
+
         public PlayService(ILogger<PlayService> log,
                            GameContext gameContext)
         {
@@ -40,9 +44,9 @@ namespace WouldYouRather.Services
             if (gameStatus == null)
             {
                 gameStatus = new GameStatus { Game = game};
-                _gameContext.GameState.Add(gameStatus);                
+                _gameContext.GameState.Add(gameStatus);
             }
-            
+
             _gameContext.Games.Update(game);
 
             SetNewChoice(gameStatus);
@@ -56,8 +60,23 @@ namespace WouldYouRather.Services
             if (status == null) return null;
 
             var gameStatus = GameStatusResponse.FromStatus(status);
+
             gameStatus.IsCurrentChoice = gameStatus.ChoosingPlayer?.Id == playerId;
             gameStatus.RemainingQuestions = RemainingQuestions(gameId);
+
+            // Return previous choice
+            if (!gameStatus.IsCurrentChoice)
+            {
+                gameStatus.ChoiceA = previousChoiceA;
+                gameStatus.ChoiceB = previousChoiceB;
+            } else if (gameStatus.ChoiceA == null || gameStatus.ChoiceB == null)
+            {
+                // TODO: Something with EF not populating the object, can look at it later
+                var choiceA = _gameContext.Answers.Find(status.ChoiceAId);
+                var choiceB = _gameContext.Answers.Find(status.ChoiceBId);
+                gameStatus.ChoiceA = AnswerResponse.FromAnswer(choiceA);
+                gameStatus.ChoiceB = AnswerResponse.FromAnswer(choiceB);
+            }
 
             return gameStatus;
         }
@@ -65,6 +84,8 @@ namespace WouldYouRather.Services
         public GameStatusResponse MakeChoice()
         {
             // Update answers, eliminated and increase chosen count
+         
+            // Set previous questions to current questions
             
             // Get new questions
 

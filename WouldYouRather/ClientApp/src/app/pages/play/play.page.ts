@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Player} from '../../model/player.model';
-import {Subscription} from 'rxjs';
+import {interval, Subscription} from 'rxjs';
 import {GameService} from '../../service/game.service';
 import {Game} from '../../model/game.model';
 import {AuthService} from '../../service/auth.service';
@@ -17,6 +17,7 @@ export class PlayPage implements OnInit, OnDestroy {
   game: Game;
   gameStatus: GameStatus;
   ready = false;
+  private polling: Subscription;
 
   choosingPlayer: Player;
 
@@ -45,8 +46,20 @@ export class PlayPage implements OnInit, OnDestroy {
     });*/
   }
 
+  ionViewWillEnter() {
+    const observable = interval(3000);
+    this.polling = observable.subscribe(() => {
+      return this.getGameInfo();
+    });
+  }
+
+  ionViewWillLeave() {
+    this.polling.unsubscribe();
+  }
+
   ngOnDestroy(): void {
     // this.stateSubscription.unsubscribe();
+    this.polling.unsubscribe();
   }
 
   getGameInfo(): void {
