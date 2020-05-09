@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WouldYouRather.Services;
@@ -32,8 +31,7 @@ namespace WouldYouRather.Controllers
                 return new StatusCodeResult(401);
             }
             
-            _log.LogInformation($"GetStatus for game {gameId}");
-            var status = _playService.GetStatus(gameId, playerId);
+            var status = _playService.GetStatusResponse(gameId, playerId);
             
             return new JsonResult(status);
         }
@@ -76,7 +74,6 @@ namespace WouldYouRather.Controllers
         public IActionResult GetPlayers(string gameId)
         {
             var players = _playService.GetPlayers(gameId);
-            _log.LogInformation("Returning players");
             
             return new JsonResult(players);
         }

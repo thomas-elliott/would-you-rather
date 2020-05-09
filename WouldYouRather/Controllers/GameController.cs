@@ -35,7 +35,6 @@ namespace WouldYouRather.Controllers
             var game = _gameService.GetGame(gameId);
             if (game != null)
             {
-                _log.LogInformation("Returned game");
                 return new JsonResult(game);
             }
 
