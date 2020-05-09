@@ -10,6 +10,7 @@ namespace WouldYouRather.Services
 {
     public class PlayService
     {
+        private readonly Random _random = new Random();
         private readonly GameContext _gameContext;
         private readonly ILogger<PlayService> _log;
 
@@ -34,21 +35,26 @@ namespace WouldYouRather.Services
             _log.LogInformation($"Starting game {gameId}");
             var game = GetGame(gameId);
             game.StartPlaying();
-            
-            var gameStatus = new GameStatus {Game = game};
 
-            _gameContext.GameState.Add(gameStatus);
+            var gameStatus = GetStatus(gameId);
+            if (gameStatus == null)
+            {
+                gameStatus = new GameStatus { Game = game};
+                _gameContext.GameState.Add(gameStatus);                
+            }
+            
             _gameContext.Games.Update(game);
+
+            SetNewChoice(gameStatus);
+
             _gameContext.SaveChanges();
         }
 
-        public GameStatusResponse GetStatus(string gameId, string playerId)
+        public GameStatusResponse GetStatusResponse(string gameId, string playerId)
         {
-            var status = _gameContext.GameState
-                .FirstOrDefault(g => g.GameId == gameId);
-
+            var status = GetStatus(gameId);
             if (status == null) return null;
-            
+
             var gameStatus = GameStatusResponse.FromStatus(status);
             gameStatus.IsCurrentChoice = gameStatus.ChoosingPlayer?.Id == playerId;
             gameStatus.RemainingQuestions = RemainingQuestions(gameId);
@@ -58,41 +64,39 @@ namespace WouldYouRather.Services
 
         public GameStatusResponse MakeChoice()
         {
-            var status = new GameStatusResponse { };
+            // Update answers, eliminated and increase chosen count
+            
+            // Get new questions
 
             throw new NotImplementedException();
-            return status;
         }
 
         public GameStatusResponse RejectChoice()
         {
+            // Get new answers
+            
             throw new NotImplementedException();
         }
 
         public GameStatusResponse JoinGame(string gameId, string playerId)
         {
             var player = GetPlayer(playerId);
-
-            if (player == null)
-            {
-                return null;
-            }
+            if (player == null) return null;
 
             player.Game = GetGame(gameId);
             _gameContext.Players.Update(player);
             _gameContext.SaveChanges();
 
-            return GetStatus(gameId, playerId);
+            return GetStatusResponse(gameId, playerId);
         }
 
         public void RemovePlayer(string gameId, string playerId)
         {
             var player = _gameContext.Players.First(p => p.Id == playerId);
-            if (player != null)
-            {
-                _gameContext.Players.Remove(player);
-                _gameContext.SaveChanges();
-            }
+            if (player == null) return;
+            
+            _gameContext.Players.Remove(player);
+            _gameContext.SaveChanges();
         }
 
         public List<PlayerResponse> GetPlayers(string gameId)
@@ -101,6 +105,37 @@ namespace WouldYouRather.Services
                 .Where(p => p.GameId == gameId)
                 .Select(p => PlayerResponse.FromPlayer(p))
                 .ToList();
+        }
+
+        private Player GetNextPlayer()
+        {
+            // Keep in order
+            // Check for players added/removed after time
+            
+            throw new NotImplementedException();            
+        }
+
+        private void SetNewChoice(GameStatus status)
+        {
+            var questions = _gameContext.Answers
+                .Where(a => a.GameId == status.GameId && !a.IsEliminated)
+                .ToList();
+
+            if (questions.Count == 0)
+            {
+                throw new InvalidOperationException("No questions");
+            }
+
+            status.ChoiceA = questions[_random.Next(questions.Count)];
+            status.ChoiceB = questions[_random.Next(questions.Count)];
+            
+            _log.LogInformation($"New choices: {status.ChoiceA?.Id} and {status.ChoiceB?.Id}");
+
+            if (questions.Count > 1 && status.ChoiceA == status.ChoiceB)
+            {
+                _log.LogWarning("Duplicate IDs, retrying");
+                SetNewChoice(status);
+            }
         }
 
         private int RemainingQuestions(string gameId)
@@ -117,6 +152,12 @@ namespace WouldYouRather.Services
         private Game GetGame(string gameId)
         {
             return _gameContext.Games.Find(gameId);
+        }
+
+        private GameStatus GetStatus(string gameId)
+        {
+            return _gameContext.GameState
+                .FirstOrDefault(g => g.GameId == gameId);
         }
     }
 }

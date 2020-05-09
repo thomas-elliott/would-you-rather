@@ -31,7 +31,7 @@ export class LobbyPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     console.log('will enter');
-    const observable = interval(1000);
+    const observable = interval(3000);
     this.polling = observable.subscribe(() => {
       return this.refreshData();
     });
