@@ -19,8 +19,6 @@ export class PlayPage implements OnInit, OnDestroy {
   ready = false;
   private polling: Subscription;
 
-  choosingPlayer: Player;
-
   constructor(private authService: AuthService,
               private gameService: GameService,
               private nav: NavController) { }
@@ -70,6 +68,7 @@ export class PlayPage implements OnInit, OnDestroy {
             this.nav.navigateBack(['/load-game'], { queryParams: { error: 'gameNotStarted'} });
           }
           this.gameStatus = info;
+          this.ready = true;
         }
     ).catch((e) => {
       console.error(`Couldn't load game: ${e.status}`);
@@ -77,12 +76,23 @@ export class PlayPage implements OnInit, OnDestroy {
     });
   }
 
+  isReady(): boolean {
+    return this.ready && this.gameStatus && !!this.gameStatus.choiceA && !!this.gameStatus.choiceB;
+  }
+
   amIPlaying(): boolean {
-    return false;
+    return this.gameStatus && this.gameStatus.isCurrentChoice;
   }
 
   isChoice(isA: boolean): boolean {
-    return true;
+    if (this.gameStatus.isCurrentChoice) {
+      return false;
+    }
+    if (isA) {
+      return !(this.gameStatus.choiceA.eliminated);
+    } else {
+      return !(this.gameStatus.choiceB.eliminated);
+    }
   }
 
   acceptChoice(isA: boolean) {

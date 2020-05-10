@@ -13,6 +13,7 @@ namespace WouldYouRather.Services
         private readonly Random _random = new Random();
         private readonly GameContext _gameContext;
         private readonly ILogger<PlayService> _log;
+        private Queue<Player> _playersQueue = new Queue<Player>();
 
         // TODO: Don't keep it in memory?
         private AnswerResponse previousChoiceA = null;
@@ -38,6 +39,7 @@ namespace WouldYouRather.Services
         {
             _log.LogInformation($"Starting game {gameId}");
             var game = GetGame(gameId);
+            var player = GetNextPlayer(gameId);
             game.StartPlaying();
 
             var gameStatus = GetStatus(gameId);
@@ -46,10 +48,11 @@ namespace WouldYouRather.Services
                 gameStatus = new GameStatus { Game = game};
                 _gameContext.GameState.Add(gameStatus);
             }
-
+            
             _gameContext.Games.Update(game);
 
             SetNewChoice(gameStatus);
+            gameStatus.ChoosingPlayer = player;
 
             _gameContext.SaveChanges();
         }
@@ -61,7 +64,7 @@ namespace WouldYouRather.Services
 
             var gameStatus = GameStatusResponse.FromStatus(status);
 
-            gameStatus.IsCurrentChoice = gameStatus.ChoosingPlayer?.Id == playerId;
+            gameStatus.IsCurrentChoice = status.ChoosingPlayerId == playerId;
             gameStatus.RemainingQuestions = RemainingQuestions(gameId);
 
             // Return previous choice
@@ -76,6 +79,16 @@ namespace WouldYouRather.Services
                 var choiceB = _gameContext.Answers.Find(status.ChoiceBId);
                 gameStatus.ChoiceA = AnswerResponse.FromAnswer(choiceA);
                 gameStatus.ChoiceB = AnswerResponse.FromAnswer(choiceB);
+            }
+
+            if (gameStatus.ChoosingPlayer == null)
+            {
+                var player = _gameContext.Players.Find(status.ChoosingPlayerId);
+                if (player != null)
+                {
+                    gameStatus.ChoosingPlayer = PlayerResponse.FromPlayer(player);
+                    gameStatus.ChoosingPlayer.IsChoosing = true;
+                }
             }
 
             return gameStatus;
@@ -107,6 +120,10 @@ namespace WouldYouRather.Services
             player.Game = GetGame(gameId);
             _gameContext.Players.Update(player);
             _gameContext.SaveChanges();
+            if (_playersQueue.Contains(player))
+            {
+                _playersQueue.Enqueue(player);
+            }
 
             return GetStatusResponse(gameId, playerId);
         }
@@ -115,6 +132,11 @@ namespace WouldYouRather.Services
         {
             var player = _gameContext.Players.First(p => p.Id == playerId);
             if (player == null) return;
+            if (_playersQueue.Contains(player))
+            {
+                _playersQueue = new Queue<Player>(
+                    _playersQueue.Where(p => p != player));
+            }
             
             _gameContext.Players.Remove(player);
             _gameContext.SaveChanges();
@@ -128,12 +150,20 @@ namespace WouldYouRather.Services
                 .ToList();
         }
 
-        private Player GetNextPlayer()
+        private Player GetNextPlayer(string gameId)
         {
             // Keep in order
             // Check for players added/removed after time
-            
-            throw new NotImplementedException();            
+            if (_playersQueue.Count == 0)
+            {
+                RefreshPlayerQueue(gameId);
+                if (_playersQueue.Count == 0)
+                {
+                    throw new NullReferenceException("No players");
+                }
+            }
+
+            return _playersQueue.Dequeue();
         }
 
         private void SetNewChoice(GameStatus status)
@@ -156,6 +186,17 @@ namespace WouldYouRather.Services
             {
                 _log.LogWarning("Duplicate IDs, retrying");
                 SetNewChoice(status);
+            }
+        }
+
+        private void RefreshPlayerQueue(string gameId)
+        {
+            var players = _gameContext.Players
+                .Where(p => p.GameId == gameId);
+
+            foreach (var p in players)
+            {
+                _playersQueue.Enqueue(p);
             }
         }
 
