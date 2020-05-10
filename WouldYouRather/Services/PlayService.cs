@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using WouldYouRather.Contexts;
@@ -13,16 +12,14 @@ namespace WouldYouRather.Services
     {
         private readonly Random _random = new Random();
         private readonly GameContext _gameContext;
+        private readonly PlayDataService _playData;
         private readonly ILogger<PlayService> _log;
-        private Queue<Player> _playersQueue = new Queue<Player>();
-
-        // TODO: Don't keep it in memory?
-        private AnswerResponse previousChoiceA = null;
-        private AnswerResponse previousChoiceB = null;
 
         public PlayService(ILogger<PlayService> log,
-                           GameContext gameContext)
+                           GameContext gameContext,
+                           PlayDataService playDataService)
         {
+            _playData = playDataService;
             _gameContext = gameContext;
             _log = log;
         }
@@ -71,8 +68,8 @@ namespace WouldYouRather.Services
             // Return previous choice
             if (!gameStatus.IsCurrentChoice)
             {
-                gameStatus.ChoiceA = previousChoiceA;
-                gameStatus.ChoiceB = previousChoiceB;
+                gameStatus.ChoiceA = _playData.GetPreviousChoiceA();
+                gameStatus.ChoiceB = _playData.GetPreviousChoiceB();
             } else if (gameStatus.ChoiceA == null || gameStatus.ChoiceB == null)
             {
                 // TODO: Something with EF not populating the object, can look at it later
@@ -119,8 +116,8 @@ namespace WouldYouRather.Services
             }
             
             // Set previous questions to current questions
-            previousChoiceA = AnswerResponse.FromAnswer(status.ChoiceA);
-            previousChoiceB = AnswerResponse.FromAnswer(status.ChoiceB);
+            _playData.SetPreviousChoiceA(AnswerResponse.FromAnswer(status.ChoiceA));
+            _playData.SetPreviousChoiceB(AnswerResponse.FromAnswer(status.ChoiceB));
 
             // Get new questions
             SetNewChoice(status);
@@ -153,9 +150,9 @@ namespace WouldYouRather.Services
             player.Game = GetGame(gameId);
             _gameContext.Players.Update(player);
             _gameContext.SaveChanges();
-            if (_playersQueue.Contains(player))
+            if (_playData.PlayerInQueue(player))
             {
-                _playersQueue.Enqueue(player);
+                _playData.AddPlayer(player);
             }
 
             return GetStatusResponse(gameId, playerId);
@@ -165,11 +162,7 @@ namespace WouldYouRather.Services
         {
             var player = _gameContext.Players.First(p => p.Id == playerId);
             if (player == null) return;
-            if (_playersQueue.Contains(player))
-            {
-                _playersQueue = new Queue<Player>(
-                    _playersQueue.Where(p => p != player));
-            }
+            _playData.RemovePlayer(player);
             
             _gameContext.Players.Remove(player);
             
@@ -197,16 +190,16 @@ namespace WouldYouRather.Services
         {
             // Keep in order
             // Check for players added/removed after time
-            if (_playersQueue.Count == 0)
+            if (_playData.PlayersQueueEmpty())
             {
                 RefreshPlayerQueue(gameId);
-                if (_playersQueue.Count == 0)
+                if (_playData.PlayersQueueEmpty())
                 {
                     throw new NullReferenceException("No players");
                 }
             }
 
-            return _playersQueue.Dequeue();
+            return _playData.GetNextPlayer();
         }
 
         private void SetNewChoice(GameStatus status)
@@ -241,11 +234,8 @@ namespace WouldYouRather.Services
         {
             var players = _gameContext.Players
                 .Where(p => p.GameId == gameId);
-
-            foreach (var p in players)
-            {
-                _playersQueue.Enqueue(p);
-            }
+            
+            _playData.PopulatePlayerQueue(players);
         }
 
         private int RemainingQuestions(string gameId)

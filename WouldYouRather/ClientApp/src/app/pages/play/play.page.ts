@@ -88,10 +88,11 @@ export class PlayPage implements OnInit, OnDestroy {
     if (this.gameStatus.isCurrentChoice) {
       return false;
     }
+
     if (isA) {
-      return !(this.gameStatus.choiceA.eliminated);
+      return !(this.gameStatus.choiceA.isEliminated);
     } else {
-      return !(this.gameStatus.choiceB.eliminated);
+      return !(this.gameStatus.choiceB.isEliminated);
     }
   }
 

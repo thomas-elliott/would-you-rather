@@ -32,6 +32,8 @@ namespace WouldYouRather
             services.AddScoped<AnswerService>();
             services.AddScoped<PlayerService>();
             services.AddScoped<PlayService>();
+
+            services.AddSingleton<PlayDataService>();
             
             services.AddDbContextPool<GameContext>(options =>
             {
