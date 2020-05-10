@@ -46,27 +46,26 @@ export class GameService {
     }));*/
   }
 
-  public acceptChoice(choiceId: string, gameId: string) {
-/*    return new Promise<void>((resolve, reject) => {
-      this.http.post(`${this.apiPath}/games/${gameId}/choose`,
-          choice).subscribe(
-          () => {
-            resolve();
+  public acceptChoice(choiceId: number, gameId: string) {
+    return new Promise<GameStatus>((resolve, reject) => {
+      this.http.post(`${this.apiPath}/play/${gameId}/accept/${choiceId}`,
+        {}).subscribe(
+          (response: GameStatus) => {
+            resolve(response);
           },
           (error) => {
-            console.error('Error accepting choice ', error);
             reject(error);
           }
       );
-    });*/
+    });
   }
 
-  public rejectChoice(choice: string, gameId: string) {
-    console.debug('Rejecting choice: ', choice);
-/*    return new Promise<Choice>((resolve, reject) => {
-      this.http.post(`${this.apiPath}/games/${gameId}/reject`,
-        choice).subscribe(
-        (response: Choice) => {
+  public rejectChoice(choiceId: number, gameId: string) {
+    console.debug('Rejecting choice: ', choiceId);
+    return new Promise<GameStatus>((resolve, reject) => {
+      this.http.post(`${this.apiPath}/play/${gameId}/reject/${choiceId}`,
+        {}).subscribe(
+        (response: GameStatus) => {
           resolve(response);
         },
         (error) => {
@@ -74,7 +73,7 @@ export class GameService {
           reject(error);
         }
       );
-    });*/
+    });
   }
 
   public async getGameInfo(gameId: string): Promise<GameStatus> {

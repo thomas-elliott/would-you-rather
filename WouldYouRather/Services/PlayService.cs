@@ -106,12 +106,12 @@ namespace WouldYouRather.Services
             if (status.ChoiceAId == answerId)
             {
                 choiceA.ChosenCount++;
-                choiceB.IsEliminated = false;
+                choiceB.IsEliminated = true;
             } 
             else if (status.ChoiceBId == answerId)
             {
                 choiceB.ChosenCount++;
-                choiceA.IsEliminated = false;
+                choiceA.IsEliminated = true;
             } 
             else
             {

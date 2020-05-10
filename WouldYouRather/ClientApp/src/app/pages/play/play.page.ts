@@ -95,38 +95,37 @@ export class PlayPage implements OnInit, OnDestroy {
     }
   }
 
-  acceptChoice(isA: boolean) {
-    console.log('accept choice');
-/*    this.ready = false;
-    const choice = this.choice;
-    choice.choiceIsA = isA;
-    this.gameService.acceptChoice(choice, this.game.id).then(
-        () => {
-          console.debug('Accepted choice.');
-        }
+  acceptChoice(answerId: number) {
+    console.log(`accept choice ${answerId}`);
+    this.ready = false;
+
+    this.gameService.acceptChoice(answerId, this.game.id).then(
+      (response: GameStatus) => {
+        console.debug('Accepted choice.');
+        this.gameStatus = response;
+        this.ready = true;
+      }
     ).catch((error) => {
       console.error('Error accepting choice: ', error);
-    });*/
+    });
   }
 
-  rejectChoice(isA: boolean) {
-    console.log('reject choice');
-/*    this.ready = false;
-    console.debug('Rejecting choice A: ', isA);
-    const choice = this.choice;
-    choice.choiceIsA = isA;
-    this.gameService.rejectChoice(choice, this.game.id).then(
-        (response: Choice) => {
-          console.debug('Rejected choice. New response: ', response);
-          this.choice = response;
-          this.ready = true;
-        }
+  rejectChoice(answerId: number) {
+    console.log(`reject choice ${answerId}`);
+    this.ready = false;
+
+    this.gameService.rejectChoice(answerId, this.game.id).then(
+      (response: GameStatus) => {
+        console.debug('Rejected choice.');
+        this.gameStatus = response;
+        this.ready = true;
+      }
     ).catch((error) => {
-      console.error('Error rejecting choice: ', error);
-    });*/
+      console.error('Error accepting choice: ', error);
+    });
   }
 
   allowReject(): boolean {
-    return this.gameStatus && this.gameStatus.canReject;
+    return !!this.gameStatus; // && this.gameStatus.canReject;
   }
 }
