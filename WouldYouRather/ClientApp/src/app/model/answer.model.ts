@@ -2,6 +2,6 @@ export class Answer {
     id: number;
     submitted: Date;
     text: string;
-    eliminated: boolean;
+    isEliminated: boolean;
     chosenCount: number;
 }
