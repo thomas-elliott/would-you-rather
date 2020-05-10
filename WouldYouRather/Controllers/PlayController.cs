@@ -109,5 +109,47 @@ namespace WouldYouRather.Controllers
             _playService.StartGame(gameId);
             return new StatusCodeResult(200);
         }
+
+        [HttpPost("choice/{answerId}")]
+        public IActionResult MakeChoice(string gameId, int answerId)
+        {
+            var playerId = Request.Headers["x-player-id"];
+            if (_playerService.IsAuth(
+                playerId,
+                Request.Headers["x-auth-key"])
+                || !_playService.IsCurrentPlayer(gameId, playerId)
+            )
+            {
+                return new StatusCodeResult(403);
+            }
+            
+            _log.LogInformation($"Player {playerId} making choice {answerId}");
+            var response = _playService.MakeChoice(gameId, answerId);
+            if (response == null)
+            {
+                return new StatusCodeResult(400);
+            }
+            
+            return new JsonResult(response);
+        }
+
+        [HttpPost("reject/{answerId}")]
+        public IActionResult RejectChoice(string gameId, int answerId)
+        {
+            var playerId = Request.Headers["x-player-id"];
+            if (_playerService.IsAuth(
+                    playerId,
+                    Request.Headers["x-auth-key"])
+                || !_playService.IsCurrentPlayer(gameId, playerId)
+            )
+            {
+                return new StatusCodeResult(403);
+            }
+            
+            _log.LogInformation($"Player {playerId} rejecting choice {answerId}");
+            var response = _playService.RejectChoice(gameId, playerId);
+            
+            return new JsonResult(response);
+        }
     }
 }

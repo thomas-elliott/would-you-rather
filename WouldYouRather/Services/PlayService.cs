@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using WouldYouRather.Contexts;
@@ -94,22 +95,54 @@ namespace WouldYouRather.Services
             return gameStatus;
         }
 
-        public GameStatusResponse MakeChoice()
+        public GameStatusResponse MakeChoice(string gameId, int answerId)
         {
             // Update answers, eliminated and increase chosen count
-         
-            // Set previous questions to current questions
-            
-            // Get new questions
+            var status = GetStatus(gameId);
+            var choiceA = GetAnswer(status.ChoiceAId);
+            var choiceB = GetAnswer(status.ChoiceBId);
+            var currentPlayer = status.ChoosingPlayerId;
 
-            throw new NotImplementedException();
+            if (status.ChoiceAId == answerId)
+            {
+                choiceA.ChosenCount++;
+                choiceB.IsEliminated = false;
+            } 
+            else if (status.ChoiceBId == answerId)
+            {
+                choiceB.ChosenCount++;
+                choiceA.IsEliminated = false;
+            } 
+            else
+            {
+                return null;
+            }
+            
+            // Set previous questions to current questions
+            previousChoiceA = AnswerResponse.FromAnswer(status.ChoiceA);
+            previousChoiceB = AnswerResponse.FromAnswer(status.ChoiceB);
+
+            // Get new questions
+            SetNewChoice(status);
+            
+            // New Player
+            status.ChoosingPlayer = GetNextPlayer(gameId);
+            
+            _gameContext.SaveChanges();
+
+            return GetStatusResponse(gameId, currentPlayer);
         }
 
-        public GameStatusResponse RejectChoice()
+        public GameStatusResponse RejectChoice(string gameId, string playerId)
         {
-            // Get new answers
+            var status = GetStatus(gameId);
             
-            throw new NotImplementedException();
+            // Get new answers
+            SetNewChoice(status);
+
+            _gameContext.SaveChanges();
+            
+            return GetStatusResponse(gameId, playerId);
         }
 
         public GameStatusResponse JoinGame(string gameId, string playerId)
@@ -139,6 +172,9 @@ namespace WouldYouRather.Services
             }
             
             _gameContext.Players.Remove(player);
+            
+            // TODO: If current choosing player, choose a new player
+            
             _gameContext.SaveChanges();
         }
 
@@ -148,6 +184,13 @@ namespace WouldYouRather.Services
                 .Where(p => p.GameId == gameId)
                 .Select(p => PlayerResponse.FromPlayer(p))
                 .ToList();
+        }
+
+        public bool IsCurrentPlayer(string gameId, string playerId)
+        {
+            var status = GetStatus(gameId);
+
+            return status.ChoosingPlayer?.Id == playerId;
         }
 
         private Player GetNextPlayer(string gameId)
@@ -187,6 +230,11 @@ namespace WouldYouRather.Services
                 _log.LogWarning("Duplicate IDs, retrying");
                 SetNewChoice(status);
             }
+        }
+
+        private Answer GetAnswer(int answerId)
+        {
+            return _gameContext.Answers.Find(answerId);
         }
 
         private void RefreshPlayerQueue(string gameId)
