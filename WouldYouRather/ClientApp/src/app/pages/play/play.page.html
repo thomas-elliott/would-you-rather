@@ -41,11 +41,11 @@
               </ion-text>
             </div>
             <div class="ion-padding-top" *ngIf="amIPlaying()">
-              <ion-button color="danger" (click)="rejectChoice(true)" *ngIf="allowReject()">
+              <ion-button color="danger" (click)="rejectChoice(gameStatus.choiceA.id)" *ngIf="allowReject()">
                 <ion-icon name="trash-outline"></ion-icon>
                 <ion-label>This is mine</ion-label>
               </ion-button>
-              <ion-button (click)="acceptChoice(true)" *ngIf="this.gameStatus.remainingQuestions > 1">
+              <ion-button (click)="acceptChoice(gameStatus.choiceA.id)" *ngIf="this.gameStatus.remainingQuestions > 1">
                 <ion-icon name="checkmark-outline"></ion-icon>
                 <ion-label>Pick</ion-label>
               </ion-button>
@@ -65,11 +65,11 @@
               </ion-text>
             </div>
             <div class="ion-padding-top" *ngIf="amIPlaying()">
-              <ion-button color="danger" (click)="rejectChoice(false)" *ngIf="allowReject()">
+              <ion-button color="danger" (click)="rejectChoice(gameStatus.choiceB.id)" *ngIf="allowReject()">
                 <ion-icon name="trash-outline"></ion-icon>
                 <ion-label>This is mine</ion-label>
               </ion-button>
-              <ion-button (click)="acceptChoice(false)" *ngIf="this.gameStatus && this.gameStatus.remainingQuestions > 1">
+              <ion-button (click)="acceptChoice(gameStatus.choiceB.id)" *ngIf="this.gameStatus && this.gameStatus.remainingQuestions > 1">
                 <ion-icon name="checkmark-outline"></ion-icon>
                 <ion-label>Pick</ion-label>
               </ion-button>
