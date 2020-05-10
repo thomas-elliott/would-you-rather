@@ -33,7 +33,7 @@ namespace WouldYouRather
             services.AddScoped<PlayerService>();
             services.AddScoped<PlayService>();
             
-            services.AddDbContext<GameContext>(options =>
+            services.AddDbContextPool<GameContext>(options =>
             {
                 var connStr = Environment.GetEnvironmentVariable("PG_CONN_STR");
                 if (connStr == null) {
