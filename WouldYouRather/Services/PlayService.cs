@@ -124,7 +124,9 @@ namespace WouldYouRather.Services
             
             // New Player
             status.ChoosingPlayer = GetNextPlayer(gameId);
-            
+
+            _gameContext.GameState.Update(status);
+            _gameContext.Players.Update(status.ChoosingPlayer);
             _gameContext.SaveChanges();
 
             return GetStatusResponse(gameId, currentPlayer);

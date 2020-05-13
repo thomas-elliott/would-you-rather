@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Player} from '../../model/player.model';
 import {interval, Subscription} from 'rxjs';
 import {GameService} from '../../service/game.service';
 import {Game} from '../../model/game.model';
@@ -127,6 +126,6 @@ export class PlayPage implements OnInit, OnDestroy {
   }
 
   allowReject(): boolean {
-    return !!this.gameStatus; // && this.gameStatus.canReject;
+    return !!this.gameStatus; // TODO: && this.gameStatus.canReject;
   }
 }
