@@ -126,6 +126,6 @@ export class PlayPage implements OnInit, OnDestroy {
   }
 
   allowReject(): boolean {
-    return !!this.gameStatus; // TODO: && this.gameStatus.canReject;
+    return !!this.gameStatus && this.gameStatus.remainingQuestions > 8;
   }
 }
