@@ -20,7 +20,7 @@ export class PlayersPage implements OnInit {
     this.fetchPlayers();
   }
 
-  fetchPlayers() {
+  fetchPlayers(): void {
     this.gameService.getPlayers().then(
         (response) => {
           console.debug('Retrieved players list: ', response);
@@ -32,11 +32,24 @@ export class PlayersPage implements OnInit {
     );
   }
 
-  clearPlayerData() {
+  clearPlayerData(): void {
     this.authService.clearPlayerData();
   }
 
-  clearAllData() {
-      this.authService.clearAllData();
+  clearAllData(): void {
+    this.authService.clearAllData();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin;
+  }
+
+  isPlayer(playerId: string): boolean {
+    return this.authService.getPlayerId() === playerId;
+  }
+
+  async removePlayer(playerId: string) {
+    await this.gameService.removePlayer(playerId);
+    this.fetchPlayers();
   }
 }

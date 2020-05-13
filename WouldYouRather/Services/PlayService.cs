@@ -166,10 +166,11 @@ namespace WouldYouRather.Services
             if (player == null) return;
             _playData.RemovePlayer(player);
             
+            var status = GetStatus(gameId);
+            status.ChoosingPlayer = GetNextPlayer(gameId);
+
+            _gameContext.GameState.Update(status);
             _gameContext.Players.Remove(player);
-            
-            // TODO: If current choosing player, choose a new player
-            
             _gameContext.SaveChanges();
         }
 
