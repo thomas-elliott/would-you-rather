@@ -162,23 +162,23 @@ export class AuthService implements OnInit {
   }
 
   private getPlayerFromStore(): Player {
-      this.player = JSON.parse(localStorage.getItem(`player_${this.game.id}`));
-      this.secretKey = localStorage.getItem(`auth_key_${this.game.id}`);
+      this.player = JSON.parse(localStorage.getItem(`player`));
+      this.secretKey = localStorage.getItem(`auth_key`);
       return this.player;
   }
 
   private savePlayerToStore(): void {
     if (this.player && this.game) {
-      localStorage.setItem(`player_${this.game.id}`, JSON.stringify(this.player));
-      localStorage.setItem(`auth_key_${this.game.id}`, this.secretKey);
+      localStorage.setItem(`player`, JSON.stringify(this.player));
+      localStorage.setItem(`auth_key`, this.secretKey);
     } else {
       console.warn('Could not save player to store', this.player, this.game);
     }
   }
 
   clearPlayerData() {
-    localStorage.removeItem(`player_${this.game.id}`);
-    localStorage.removeItem(`auth_key_${this.game.id}`);
+    localStorage.removeItem(`player`);
+    localStorage.removeItem(`auth_key`);
   }
 
   clearAllData() {
