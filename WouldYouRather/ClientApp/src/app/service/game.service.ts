@@ -1,8 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
-import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {environment} from '../../environments/environment';
+import {Observable} from 'rxjs';
 import {Player} from '../model/player.model';
 import {AuthService} from './auth.service';
 import {GameStatus} from '../model/gameStatus.model';
@@ -42,5 +42,11 @@ export class GameService {
 
   public async getGameInfo(gameId: string): Promise<GameStatus> {
     return await this.http.get<GameStatus>(`${this.apiPath}/play/${gameId}`).toPromise();
+  }
+
+  public async removePlayer(playerId: string) {
+    const game = await this.authService.getGame();
+
+    return await this.http.delete(`${this.apiPath}/play/${game.id}/players/${playerId}`).toPromise();
   }
 }

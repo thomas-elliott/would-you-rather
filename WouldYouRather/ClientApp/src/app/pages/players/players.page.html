@@ -13,6 +13,10 @@
                 <ion-item *ngFor="let player of players">
                   <ion-label>{{player.name}}</ion-label>
                   <ion-icon *ngIf="player.choosing" name="time-outline"></ion-icon>
+                  <ion-button *ngIf="isAdmin() && !isPlayer(player.id)"
+                    (click)="removePlayer(player.id)">
+                    Remove
+                  </ion-button>
                 </ion-item>
             </ion-list>
           </ion-card-content>
