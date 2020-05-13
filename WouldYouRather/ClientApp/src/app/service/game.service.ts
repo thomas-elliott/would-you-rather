@@ -30,50 +30,14 @@ export class GameService {
     return this.http.get<Player[]>(`${this.apiPath}/play/${game.id}/players`).toPromise();
   }
 
-  public getChoice(gameId: string) {
-    console.debug('Getting choice');
-/*    return new Promise<Choice> (((resolve, reject) => {
-      this.http.get(`${this.apiPath}/games/${gameId}/choice`).subscribe(
-          (response: Choice) => {
-            console.debug('Returned choice', response);
-            resolve(response);
-          },
-          (error) => {
-            console.debug('Error retrieving choice ', error);
-            reject(error);
-          }
-      );
-    }));*/
+  public async acceptChoice(choiceId: number, gameId: string): Promise<GameStatus> {
+    console.debug(`Accepting choice ${choiceId}`);
+    return await this.http.post<GameStatus>(`${this.apiPath}/play/${gameId}/accept/${choiceId}`, {}).toPromise();
   }
 
-  public acceptChoice(choiceId: number, gameId: string) {
-    return new Promise<GameStatus>((resolve, reject) => {
-      this.http.post(`${this.apiPath}/play/${gameId}/accept/${choiceId}`,
-        {}).subscribe(
-          (response: GameStatus) => {
-            resolve(response);
-          },
-          (error) => {
-            reject(error);
-          }
-      );
-    });
-  }
-
-  public rejectChoice(choiceId: number, gameId: string) {
-    console.debug('Rejecting choice: ', choiceId);
-    return new Promise<GameStatus>((resolve, reject) => {
-      this.http.post(`${this.apiPath}/play/${gameId}/reject/${choiceId}`,
-        {}).subscribe(
-        (response: GameStatus) => {
-          resolve(response);
-        },
-        (error) => {
-          console.error('Error rejecting choice ', error);
-          reject(error);
-        }
-      );
-    });
+  public async rejectChoice(choiceId: number, gameId: string): Promise<GameStatus> {
+    console.debug(`Rejecting choice ${choiceId}`);
+    return await this.http.post<GameStatus>(`${this.apiPath}/play/${gameId}/reject/${choiceId}`, {}).toPromise();
   }
 
   public async getGameInfo(gameId: string): Promise<GameStatus> {

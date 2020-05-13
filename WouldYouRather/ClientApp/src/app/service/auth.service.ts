@@ -66,16 +66,13 @@ export class AuthService implements OnInit {
 
     console.debug('Checking player against server', this.player);
     await this.checkPlayer(this.player.id);
-    // TODO: remove saved settings if the server can't validate it?
 
     return this.player;
   }
 
   public async checkPlayer(playerId: string) {
     try {
-      const player = await this.http.get(`${this.apiPath}/players/${playerId}`).toPromise();
-
-      return player;
+      return await this.http.get(`${this.apiPath}/players/${playerId}`).toPromise();
     } catch (e) {
       console.log('Error while checking player against server', e);
       throw new Error(e);

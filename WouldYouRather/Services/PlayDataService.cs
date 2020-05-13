@@ -9,7 +9,6 @@ namespace WouldYouRather.Services
     {
         private Queue<Player> _playersQueue = new Queue<Player>();
 
-        // TODO: Don't keep it in memory?
         private AnswerResponse _previousChoiceA = null;
         private AnswerResponse _previousChoiceB = null;
 
