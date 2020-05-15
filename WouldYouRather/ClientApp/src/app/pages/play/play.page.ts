@@ -66,6 +66,9 @@ export class PlayPage implements OnInit, OnDestroy {
           if (info == null) {
             this.nav.navigateBack(['/load-game'], { queryParams: { error: 'gameNotStarted'} });
           }
+          if (info.remainingQuestions === 1) {
+            this.nav.navigateForward(['/winner']);
+          }
           this.gameStatus = info;
           this.ready = true;
         }
