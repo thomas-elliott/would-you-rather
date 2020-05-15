@@ -44,7 +44,7 @@ export class PlayPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    const observable = interval(3000);
+    const observable = interval(1000);
     this.polling = observable.subscribe(() => {
       return this.getGameInfo();
     });
@@ -62,7 +62,7 @@ export class PlayPage implements OnInit, OnDestroy {
   getGameInfo(): void {
     this.gameService.getGameInfo(this.game.id).then(
         (info: GameStatus) => {
-          console.debug('Game info', info);
+          // console.debug('Game info', info);
           if (info == null) {
             this.nav.navigateBack(['/load-game'], { queryParams: { error: 'gameNotStarted'} });
           }

@@ -10,7 +10,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const authKey = this.authService.getAuthKey();
     const playerId = this.authService.getPlayerId();
-    console.debug(`Interceptor AuthKey: ${authKey} PlayerId: ${playerId}`);
+    // console.debug(`Interceptor AuthKey: ${authKey} PlayerId: ${playerId}`);
 
     req = req.clone({
       headers: req.headers.append(
