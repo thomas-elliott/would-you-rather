@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WouldYouRather.Entities;
 using WouldYouRather.Services;
 
 namespace WouldYouRather.Controllers
@@ -57,6 +58,23 @@ namespace WouldYouRather.Controllers
             
             _log.LogInformation("Created new game");
             return CreatedAtRoute("GetGameById", new { gameId = game.Id }, game);
+        }
+
+        [HttpPut("{gameId}/info")]
+        public IActionResult UpdateGameInfo(string gameId, [FromBody] Config config)
+        {
+            if (!_playerService.IsAdmin(
+                Request.Headers["x-player-id"],
+                Request.Headers["x-auth-key"]
+            ))
+            {
+                return new StatusCodeResult(403);
+            }
+            
+            _log.LogInformation($"Update game {gameId} info with {config}");
+            _gameService.UpdateInfo(gameId, config);
+            
+            return new StatusCodeResult(200);
         }
     }
 }
