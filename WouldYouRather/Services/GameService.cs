@@ -44,5 +44,15 @@ namespace WouldYouRather.Services
                 .Select(x => GameResponse.FromGame(x))
                 .FirstOrDefault();
         }
+
+        public void UpdateInfo(string gameId, Config config)
+        {
+            var game = _gameContext.Games
+                .First(x => x.Id == gameId);
+
+            game.Config = config;
+            _gameContext.Games.Update(game);
+            _gameContext.SaveChanges();
+        }
     }
 }

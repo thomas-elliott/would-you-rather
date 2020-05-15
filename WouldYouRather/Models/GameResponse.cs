@@ -8,6 +8,7 @@ namespace WouldYouRather.Models
         public bool IsPlaying { get; set; }
         public bool IsLobbyOpen { get; set; }
         public bool IsAcceptingSubmissions { get; set; }
+        public Config GameConfig { get; set; }
 
         public static GameResponse FromGame(Game game)
         {
@@ -16,7 +17,8 @@ namespace WouldYouRather.Models
                 Id = game.Id,
                 IsPlaying = game.IsPlaying,
                 IsLobbyOpen = game.IsLobbyOpen,
-                IsAcceptingSubmissions = game.IsAcceptingSubmissions
+                IsAcceptingSubmissions = game.IsAcceptingSubmissions,
+                GameConfig = game.Config
             };
         }
     }

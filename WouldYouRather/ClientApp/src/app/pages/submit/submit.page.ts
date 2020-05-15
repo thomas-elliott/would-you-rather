@@ -4,7 +4,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {AuthService} from '../../service/auth.service';
 import {Game} from '../../model/game.model';
 import {AlertController} from '@ionic/angular';
-import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-submit',
@@ -12,10 +11,6 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./submit.page.scss'],
 })
 export class SubmitPage implements OnInit {
-  submitMessage = environment.submitMessage;
-  submitSuccessMessage = environment.submitSuccessMessage;
-  submitSuccessButton = environment.submitSuccessButton;
-  submitErrorMessage = environment.submitErrorMessage;
   answer: string;
   game: Game;
   ready = false;
@@ -55,8 +50,8 @@ export class SubmitPage implements OnInit {
   async showSuccessfulAlert() {
     const alert = await this.alertCtrl.create({
       header: 'Received answer',
-      message: this.submitSuccessMessage,
-      buttons: [this.submitSuccessButton]
+      message: this.game.config.submitSuccessMessage,
+      buttons: [this.game.config.submitSuccessButton]
     });
 
     await alert.present();
@@ -65,7 +60,7 @@ export class SubmitPage implements OnInit {
   async showErrorAlert() {
     const alert = await this.alertCtrl.create({
       header: 'Error',
-      message: this.submitErrorMessage,
+      message: this.game.config.submitErrorMessage,
       buttons: ['OK']
     });
 

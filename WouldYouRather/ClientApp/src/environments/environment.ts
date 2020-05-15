@@ -4,11 +4,7 @@
 
 export const environment = {
   production: false,
-  serverPath: '/api',
-  submitMessage: 'Submit a choice',
-  submitSuccessMessage: 'Thank you for submitting',
-  submitSuccessButton: 'OK',
-  submitErrorMessage: 'There was an error trying to submit your answer'
+  serverPath: '/api'
 };
 
 /*
