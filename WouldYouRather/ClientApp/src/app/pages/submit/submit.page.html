@@ -7,7 +7,7 @@
         </ion-card>
         <ion-card *ngIf="ready">
           <ion-card-header>
-            <ion-card-title>{{ game.config.submitMessage }}</ion-card-title>
+            <ion-card-title>{{ getSubmitMessage() }}</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ion-textarea [(ngModel)]="answer"

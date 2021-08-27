@@ -21,11 +21,11 @@ export class SubmitPage implements OnInit {
               private alertCtrl: AlertController) { }
 
   ngOnInit() {
-    this.authService.getGame().then(
-        (resolve) => {
-          this.game = resolve;
-          this.ready = true;
-    });
+    (async () => {
+      const gameId = await this.authService.getGame();
+      this.game = await this.authService.checkGame(gameId.id);
+      this.ready = true;
+    })();
   }
 
   disableSubmit(): boolean {
@@ -47,11 +47,19 @@ export class SubmitPage implements OnInit {
     });
   }
 
+  getSubmitMessage(): string {
+    if (!this.ready) {
+      return 'Loading...';
+    } else {
+      return this.game.gameConfig.submitMessage;
+    }
+  }
+
   async showSuccessfulAlert() {
     const alert = await this.alertCtrl.create({
       header: 'Received answer',
-      message: this.game.config.submitSuccessMessage,
-      buttons: [this.game.config.submitSuccessButton]
+      message: this.game.gameConfig.submitSuccessMessage,
+      buttons: [this.game.gameConfig.submitSuccessButton]
     });
 
     await alert.present();
@@ -60,7 +68,7 @@ export class SubmitPage implements OnInit {
   async showErrorAlert() {
     const alert = await this.alertCtrl.create({
       header: 'Error',
-      message: this.game.config.submitErrorMessage,
+      message: this.game.gameConfig.submitErrorMessage,
       buttons: ['OK']
     });
 
