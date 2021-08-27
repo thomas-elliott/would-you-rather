@@ -22,7 +22,7 @@ export class SettingsPage implements OnInit {
 
   getSubmitLink(): string {
     if (this.game) {
-      return `${window.location.origin}/submit/${this.game.id}`;
+      return `${window.location.origin}/#/submit/${this.game.id}`;
     } else {
       return 'Waiting...';
     }

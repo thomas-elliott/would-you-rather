@@ -41,7 +41,7 @@ export class PlayersPage implements OnInit {
   }
 
   isAdmin(): boolean {
-    return this.authService.isAdmin;
+    return this.authService.isAdmin();
   }
 
   isPlayer(playerId: string): boolean {
