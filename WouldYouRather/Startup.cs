@@ -37,11 +37,22 @@ namespace WouldYouRather
             
             services.AddDbContextPool<GameContext>(options =>
             {
-                var connStr = Environment.GetEnvironmentVariable("PG_CONN_STR");
-                if (connStr == null) {
-                    throw new NullReferenceException("No connection string provided as env var PG_CONN_STR");
+                var host = Environment.GetEnvironmentVariable("PG_HOST");
+                var port = Environment.GetEnvironmentVariable("PG_PORT");
+                var database = Environment.GetEnvironmentVariable("PG_DB");
+                var username = Environment.GetEnvironmentVariable("PG_USER");
+                var password = Environment.GetEnvironmentVariable("PG_PASS");
+                
+                if (string.IsNullOrEmpty(host) ||
+                    string.IsNullOrEmpty(port) ||
+                    string.IsNullOrEmpty(database) ||
+                    string.IsNullOrEmpty(username) ||
+                    string.IsNullOrEmpty(password)
+                    ) {
+                    throw new NullReferenceException("Missing connection string provided as environment variables");
                 }
-                options.UseNpgsql(connStr)
+
+                options.UseNpgsql($"Host={host};Port={port};Database={database};Username={username};Password={password}")
                        .UseSnakeCaseNamingConvention();
             });
             
