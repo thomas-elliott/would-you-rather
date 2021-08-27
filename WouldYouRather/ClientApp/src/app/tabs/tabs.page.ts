@@ -32,6 +32,6 @@ export class TabsPage implements OnInit {
   }
 
   showSettings(): boolean {
-    return this.auth.isAdmin;
+    return this.auth.isAdmin();
   }
 }

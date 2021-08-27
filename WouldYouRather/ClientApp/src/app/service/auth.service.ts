@@ -13,7 +13,6 @@ export class AuthService implements OnInit {
   private game: Game;
   private player: Player;
   private secretKey: string;
-  public isAdmin = true;
 
   private apiPath = `${environment.serverPath}`;
 
@@ -31,6 +30,14 @@ export class AuthService implements OnInit {
           return false;
       }
       return !!this.player.id;
+  }
+
+  public isAdmin(): boolean {
+    if (!this.player) {
+      return false;
+    }
+
+    return this.player.admin;
   }
 
   public async getGame(): Promise<Game> {
@@ -82,10 +89,9 @@ export class AuthService implements OnInit {
   public async registerPlayer(playerName: string) {
     try {
       const player = await this.http.post<Auth>(`${this.apiPath}/players`, new Player(playerName)).toPromise();
-      this.player = new Player(player.name, player.id);
+      this.player = new Player(player.name, player.id, player.admin);
 
       this.secretKey = player.authKey;
-      this.isAdmin = player.admin;
       this.savePlayerToStore();
       return this.player;
     } catch {
