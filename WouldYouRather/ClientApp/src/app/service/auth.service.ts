@@ -104,7 +104,9 @@ export class AuthService implements OnInit {
   }
 
   public async checkGame(id: string) {
-    return await this.http.get<Game>(`${this.apiPath}/games/${id}`).toPromise();
+    const game = this.http.get<Game>(`${this.apiPath}/games/${id}`).toPromise();
+    console.debug('Checking game', game);
+    return game;
   }
 
   public async setGameId(id: string) {

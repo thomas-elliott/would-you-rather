@@ -5,5 +5,5 @@ export class Game {
     isPlaying: boolean;
     isLobbyOpen: boolean;
     isAcceptingSubmissions: boolean;
-    config: GameConfig;
+    gameConfig: GameConfig;
 }
