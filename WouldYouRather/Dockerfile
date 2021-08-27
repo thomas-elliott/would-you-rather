@@ -5,7 +5,7 @@ WORKDIR /source
 RUN apt-get update -yq \
     && apt-get install curl gnupg -yq \
     && curl -sL https://deb.nodesource.com/setup_16.x | bash \
-    && apt-get install nodejs -yq && npm install -g @angular/cli@9 && npm install -g @ionic/cli
+    && apt-get install nodejs -yq && npm install -g @angular/cli@11 && npm install -g @ionic/cli
 
 # copy csproj and restore as distinct layers
 COPY *.csproj .
