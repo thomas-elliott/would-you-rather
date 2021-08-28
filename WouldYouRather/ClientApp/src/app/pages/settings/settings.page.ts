@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../service/auth.service';
 import {Game} from '../../model/game.model';
+import {GameService} from '../../service/game.service';
 
 @Component({
   selector: 'app-settings',
@@ -10,7 +11,8 @@ import {Game} from '../../model/game.model';
 export class SettingsPage implements OnInit {
   game: Game;
 
-  constructor(private auth : AuthService) {}
+  constructor(private auth : AuthService,
+              private gameService: GameService) {}
 
   ngOnInit() {
     this.auth.getGame().then((game: Game) => {
@@ -34,6 +36,6 @@ export class SettingsPage implements OnInit {
   }
 
   startGame(): void {
-    // TODO
+    this.gameService.startGame(this.game.id);
   }
 }

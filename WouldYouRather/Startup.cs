@@ -53,6 +53,7 @@ namespace WouldYouRather
                 }
 
                 options.UseNpgsql($"Host={host};Port={port};Database={database};Username={username};Password={password}")
+                       .EnableSensitiveDataLogging()
                        .UseSnakeCaseNamingConvention();
             });
             
