@@ -168,8 +168,18 @@ namespace WouldYouRather.Services
             _playData.RemovePlayer(player);
             
             var status = GetStatus(gameId);
-            status.ChoosingPlayer = GetNextPlayer(gameId);
 
+            var countTryPlayer = 0;
+            
+            var nextPlayer = GetNextPlayer(gameId);
+            while (nextPlayer.Id == playerId)
+            {
+                if (countTryPlayer > 2) return;
+                nextPlayer = GetNextPlayer(gameId);
+                countTryPlayer++;
+            }
+
+            status.ChoosingPlayerId = nextPlayer.Id;
             _gameContext.GameState.Update(status);
             _gameContext.Players.Remove(player);
             _gameContext.SaveChanges();
