@@ -20,11 +20,20 @@ export class SettingsPage implements OnInit {
     });
   }
 
+  isAllowingEntries(): boolean {
+    if (!this.game) return false;
+    return this.game.isAcceptingSubmissions;
+  }
+
   getSubmitLink(): string {
     if (this.game) {
       return `${window.location.origin}/#/submit/${this.game.id}`;
     } else {
       return 'Waiting...';
     }
+  }
+
+  startGame(): void {
+    // TODO
   }
 }

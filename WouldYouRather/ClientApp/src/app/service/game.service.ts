@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {Player} from '../model/player.model';
 import {AuthService} from './auth.service';
 import {GameStatus} from '../model/gameStatus.model';
+import {Game} from "../model/game.model";
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,12 @@ export class GameService {
   public async rejectChoice(choiceId: number, gameId: string): Promise<GameStatus> {
     console.debug(`Rejecting choice ${choiceId}`);
     return await this.http.post<GameStatus>(`${this.apiPath}/play/${gameId}/reject/${choiceId}`, {}).toPromise();
+  }
+
+  public async startGame(gameId: string): Promise<boolean> {
+    console.debug(`Starting game ${gameId}`);
+    await this.http.post(`${this.apiPath}/play/${gameId}/start`, {}).toPromise();
+    return true;
   }
 
   public async getGameInfo(gameId: string): Promise<GameStatus> {

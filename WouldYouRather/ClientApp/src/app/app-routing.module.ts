@@ -30,10 +30,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/enter-name/enter-name.module').then( m => m.EnterNamePageModule)
   },
   {
-    path: 'lobby',
-    loadChildren: () => import('./pages/lobby/lobby.module').then( m => m.LobbyPageModule)
-  },
-  {
     path: 'winner',
     loadChildren: () => import('./pages/winner/winner.module').then( m => m.WinnerPageModule)
   }

@@ -48,6 +48,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'lobby',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../pages/lobby/lobby.module').then(m => m.LobbyPageModule)
+        }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/submit',
         pathMatch: 'full'

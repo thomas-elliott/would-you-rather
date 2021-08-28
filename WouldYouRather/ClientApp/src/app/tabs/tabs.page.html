@@ -1,6 +1,11 @@
 <ion-tabs>
 
   <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="lobby" *ngIf="showLobby()">
+      <ion-icon name="time-outline"></ion-icon>
+      <ion-label>Lobby</ion-label>
+    </ion-tab-button>
+
     <ion-tab-button tab="play" *ngIf="showPlay()">
       <ion-icon name="play"></ion-icon>
       <ion-label>Play</ion-label>
@@ -13,12 +18,12 @@
 
     <ion-tab-button tab="players" *ngIf="showPlayers()">
       <ion-icon name="people-outline"></ion-icon>
-      <ion-label>Players</ion-label>      
+      <ion-label>Players</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="settings" *ngIf="showSettings()">
       <ion-icon name="cog-outline"></ion-icon>
-      <ion-label>Settings</ion-label>      
+      <ion-label>Settings</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 

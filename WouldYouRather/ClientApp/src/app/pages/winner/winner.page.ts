@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {GameStatus} from "../../model/gameStatus.model";
-import {Game} from "../../model/game.model";
-import {AuthService} from "../../service/auth.service";
-import {GameService} from "../../service/game.service";
-import {NavController} from "@ionic/angular";
+import {GameStatus} from '../../model/gameStatus.model';
+import {Game} from '../../model/game.model';
+import {AuthService} from '../../service/auth.service';
+import {GameService} from '../../service/game.service';
+import {NavController} from '@ionic/angular';
 
 @Component({
   selector: 'app-winner',
