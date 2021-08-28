@@ -36,8 +36,7 @@ export class AuthService implements OnInit {
     if (!this.player) {
       return false;
     }
-
-    return this.player.admin;
+    return this.player.isAdmin;
   }
 
   public async getGame(): Promise<Game> {
@@ -71,15 +70,15 @@ export class AuthService implements OnInit {
       }
     }
 
-    console.debug('Checking player against server', this.player);
-    await this.checkPlayer(this.player.id);
+    this.player = await this.checkPlayer(this.player.id);
+    this.savePlayerToStore();
 
     return this.player;
   }
 
-  public async checkPlayer(playerId: string) {
+  public async checkPlayer(playerId: string): Promise<Player> {
     try {
-      return await this.http.get(`${this.apiPath}/players/${playerId}`).toPromise();
+      return await this.http.get<Player>(`${this.apiPath}/players/${playerId}`).toPromise();
     } catch (e) {
       console.log('Error while checking player against server', e);
       throw new Error(e);

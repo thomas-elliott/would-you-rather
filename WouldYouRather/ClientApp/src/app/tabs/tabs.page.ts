@@ -13,6 +13,7 @@ export class TabsPage implements OnInit {
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
+    this.auth.getPlayer();
     this.auth.getGame().then(
       (response) => {
         this.game = response;
@@ -27,8 +28,12 @@ export class TabsPage implements OnInit {
     return this.game && this.game.isPlaying;
   }
 
+  showLobby(): boolean {
+    return this.game && this.game.isLobbyOpen;
+  }
+
   showSubmit(): boolean {
-    return this.game && !this.game.isPlaying;
+    return this.game && !this.game.isPlaying && this.game.isAcceptingSubmissions;
   }
 
   showSettings(): boolean {

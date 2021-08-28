@@ -45,7 +45,7 @@ namespace WouldYouRather.Controllers
                 return new StatusCodeResult(403);
             }
             
-            return new StatusCodeResult(200);
+            return new JsonResult(player);
         }
 
         [HttpPost]

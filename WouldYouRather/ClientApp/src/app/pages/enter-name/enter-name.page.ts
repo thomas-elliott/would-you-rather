@@ -59,7 +59,7 @@ export class EnterNamePage implements OnInit {
     if (game.isPlaying) {
       await this.nav.navigateForward('/tabs/play');
     } else {
-      await this.nav.navigateForward('/lobby');
+      await this.nav.navigateForward('/tabs/lobby');
     }
   }
 }

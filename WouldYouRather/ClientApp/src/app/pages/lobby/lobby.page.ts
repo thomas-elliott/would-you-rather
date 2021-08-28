@@ -4,8 +4,7 @@ import {AuthService} from '../../service/auth.service';
 import {GameService} from '../../service/game.service';
 import {NavController} from '@ionic/angular';
 import {Player} from '../../model/player.model';
-import {interval, Observable, Subscription} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {interval, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-lobby',
@@ -14,6 +13,7 @@ import {switchMap} from 'rxjs/operators';
 })
 export class LobbyPage implements OnInit, OnDestroy {
   game: Game;
+  player: Player;
   players: Player[];
   ready = false;
   polling: Subscription;
@@ -23,6 +23,13 @@ export class LobbyPage implements OnInit, OnDestroy {
               private nav: NavController) { }
 
   ngOnInit(): void {
+    this.authService.getPlayer().then(
+      (player: Player) => {
+        this.player = player;
+        console.log('Lobby loaded, player is ', this.player);
+      }
+    );
+
     this.authService.getGame().then(
       (game: Game) => {
         this.game = game;
@@ -72,5 +79,13 @@ export class LobbyPage implements OnInit, OnDestroy {
         console.error('Error getting players on Players page: ', error);
       }
     );
+  }
+
+  getPlayerName(): string {
+    if (this.player) {
+      return this.player.name;
+    } else {
+      return 'null';
+    }
   }
 }
