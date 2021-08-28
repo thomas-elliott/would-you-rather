@@ -123,10 +123,11 @@ namespace WouldYouRather.Services
             SetNewChoice(status);
             
             // New Player
-            status.ChoosingPlayer = GetNextPlayer(gameId);
+            var nextPlayer = GetNextPlayer(gameId);
+            status.ChoosingPlayerId = nextPlayer.Id;
 
             _gameContext.GameState.Update(status);
-            _gameContext.Players.Update(status.ChoosingPlayer);
+            _gameContext.Players.Update(nextPlayer);
             _gameContext.SaveChanges();
 
             return GetStatusResponse(gameId, currentPlayer);
