@@ -18,6 +18,8 @@ export class PlayPage implements OnInit, OnDestroy {
   ready = false;
   private polling: Subscription;
 
+  allowClick = false;
+
   constructor(private authService: AuthService,
               private gameService: GameService,
               private nav: NavController) { }
