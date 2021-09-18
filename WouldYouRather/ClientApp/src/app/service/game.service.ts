@@ -6,7 +6,6 @@ import {Observable} from 'rxjs';
 import {Player} from '../model/player.model';
 import {AuthService} from './auth.service';
 import {GameStatus} from '../model/gameStatus.model';
-import {Game} from "../model/game.model";
 
 @Injectable({
   providedIn: 'root'
@@ -55,5 +54,10 @@ export class GameService {
     const game = await this.authService.getGame();
 
     return await this.http.delete(`${this.apiPath}/play/${game.id}/players/${playerId}`).toPromise();
+  }
+
+  public async createGame() {
+    const response = await this.http.post(`${this.apiPath}/games`, {});
+    console.log('Created game', response);
   }
 }

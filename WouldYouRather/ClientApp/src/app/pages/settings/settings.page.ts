@@ -38,4 +38,8 @@ export class SettingsPage implements OnInit {
   startGame(): void {
     this.gameService.startGame(this.game.id);
   }
+
+  createGame(): void {
+    this.gameService.createGame();
+  }
 }

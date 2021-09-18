@@ -28,10 +28,6 @@ const routes: Routes = [
   {
     path: 'enter-name',
     loadChildren: () => import('./pages/enter-name/enter-name.module').then( m => m.EnterNamePageModule)
-  },
-  {
-    path: 'winner',
-    loadChildren: () => import('./pages/winner/winner.module').then( m => m.WinnerPageModule)
   }
 ];
 @NgModule({
