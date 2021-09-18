@@ -46,7 +46,11 @@ namespace WouldYouRather.Services
             {
                 return null;
             }
-            
+
+            var game = _gameContext.Games.FirstOrDefault(x => x.Id == gameId);
+
+            if (game is not { IsAcceptingSubmissions: true }) return null;
+
             var answer = _gameContext.Answers.Add(
                 new Answer
                 {
