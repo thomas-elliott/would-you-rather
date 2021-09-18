@@ -7,7 +7,7 @@ namespace WouldYouRather.Services
 {
     public class PlayDataService
     {
-        private Queue<Player> _playersQueue = new Queue<Player>();
+        private Queue<Player> _playersQueue = new();
 
         private AnswerResponse _previousChoiceA = null;
         private AnswerResponse _previousChoiceB = null;
