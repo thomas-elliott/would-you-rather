@@ -18,8 +18,6 @@ export class PlayPage implements OnInit, OnDestroy {
   ready = false;
   private polling: Subscription;
 
-  allowClick = false;
-
   constructor(private authService: AuthService,
               private gameService: GameService,
               private nav: NavController) { }
@@ -69,7 +67,7 @@ export class PlayPage implements OnInit, OnDestroy {
             this.nav.navigateBack(['/load-game'], { queryParams: { error: 'gameNotStarted'} });
           }
           if (info.remainingQuestions === 1) {
-            this.nav.navigateForward(['/winner']);
+            this.nav.navigateForward(['/tabs/winner']);
           }
           this.gameStatus = info;
           this.ready = true;

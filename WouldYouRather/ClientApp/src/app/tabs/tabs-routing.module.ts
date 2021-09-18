@@ -58,6 +58,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'winner',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../pages/winner/winner.module').then(m => m.WinnerPageModule)
+          }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/submit',
         pathMatch: 'full'
