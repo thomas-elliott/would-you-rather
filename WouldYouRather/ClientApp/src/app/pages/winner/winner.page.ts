@@ -32,6 +32,14 @@ export class WinnerPage implements OnInit {
     });
   }
 
+  getWinner(): string {
+    if (!this.gameStatus.choiceA.isEliminated) {
+      return this.gameStatus.choiceA.text;
+    } else {
+      return this.gameStatus.choiceB.text;
+    }
+  }
+
   getGameInfo(): void {
     this.gameService.getGameInfo(this.game.id).then(
       (info: GameStatus) => {

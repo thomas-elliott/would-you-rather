@@ -112,8 +112,11 @@ namespace WouldYouRather.Services
             } 
             else
             {
+                _log.LogError($"Make Choice: Answer ID {answerId} didn't match choice A {status.ChoiceAId} or B {status.ChoiceBId}");
                 return null;
             }
+            
+            _gameContext.SaveChanges();
             
             // Set previous questions to current questions
             _playData.SetPreviousChoiceA(AnswerResponse.FromAnswer(status.ChoiceA));
